@@ -9,6 +9,28 @@
   outline: 0;
 }
 
+body {
+  width: 100%;
+  min-height: 100vh;
+  height: 100%;
+}
+
+.containerLogin {
+  background: url(../../public/login.svg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+@media (max-width: 860px) {
+  .containerLogin {
+    background: url(../../public/login-mobile.svg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

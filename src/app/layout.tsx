@@ -13,7 +13,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br">
-      <body className={`antialiased`}>{children}</body>
+      <head>
+        <link href="https://fonts.cdnfonts.com/css/jk-abode" rel="stylesheet" />
+      </head>
+      <body className={`antialiased`}>
+        {children}
+      </body>
     </html>
   );
 }
