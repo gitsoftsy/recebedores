@@ -14,13 +14,18 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const navigate = useRouter();
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit = (data: FormData) => {};
+  const onSubmit = (data: FormData) => {
+    navigate.push("/dashboard/cadastro");
+  };
+
   return (
     <main className="containerLogin w-full h-full min-h-screen flex justify-center items-center">
       <Form {...form}>
@@ -37,6 +42,7 @@ export default function Home() {
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
+                    required={true}
                     type="email"
                     disabled={field.disabled}
                     id={field.name}
@@ -71,7 +77,12 @@ export default function Home() {
               </FormItem>
             )}
           />
-          <Button className="w-full mt-8 bg-blue-950 transition duration-300 ease-in-out hover:bg-blue-800" type="submit">Logar</Button>
+          <Button
+            className="w-full mt-8 bg-blue-950 transition duration-300 ease-in-out hover:bg-blue-800"
+            type="submit"
+          >
+            Logar
+          </Button>
         </form>
       </Form>
     </main>

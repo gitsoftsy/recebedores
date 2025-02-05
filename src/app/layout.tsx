@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { ToastContainer } from "react-toastify";
 import "./globals.css";
+import { UserProvider } from "@/contexts/UserContext";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +18,8 @@ export default function RootLayout({
       <head>
         <link href="https://fonts.cdnfonts.com/css/jk-abode" rel="stylesheet" />
       </head>
-      <body className={`antialiased`}>
+      <body>
+        <ToastContainer autoClose={3000} />
         {children}
       </body>
     </html>
