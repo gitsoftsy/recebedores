@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { ToastContainer } from "react-toastify";
 import "./globals.css";
-import { UserProvider } from "@/contexts/UserContext";
 
 export const metadata: Metadata = {
   title: "Create Next App",

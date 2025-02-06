@@ -14,9 +14,10 @@ export default {
     extend: {
       colors: {
         system: {
-          blue: "#031E3B", 
-          yellow: "#FEC422", 
-		  gray: "#DDDDDD"
+          blue: "#031E3B",
+          yellow: "#FEC422",
+          gray: "#DDDDDD",
+          grayBG: "#F8F8F8",
         },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

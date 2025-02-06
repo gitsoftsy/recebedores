@@ -21,6 +21,10 @@ body {
   background-repeat: no-repeat;
 }
 
+.ps-sidebar-root {
+  border: none !important;
+}
+
 @media (max-width: 860px) {
   .containerLogin {
     background: url(../../public/login-mobile.svg);
