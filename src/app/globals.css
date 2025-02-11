@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+@theme {
+  --breakpoint-xs: 30rem;
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -12,6 +16,18 @@
 body {
   width: 100%;
   height: 100vh;
+}
+
+/* Para WebKit (Chrome, Safari, Edge) */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Para Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }
 
 .containerLogin {

@@ -12,6 +12,9 @@ export default {
       jkabode: ["JK Abode", "sans-serif"],
     },
     extend: {
+      screens: {
+        "xs": "480px"
+      },
       colors: {
         system: {
           blue: "#031E3B",

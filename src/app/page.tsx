@@ -23,7 +23,7 @@ export default function Home() {
   });
 
   const onSubmit = (data: FormData) => {
-    navigate.push("/dashboard/cadastro");
+    navigate.push("/dashboard/start");
   };
 
   return (

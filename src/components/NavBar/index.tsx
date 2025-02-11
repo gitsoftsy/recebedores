@@ -66,6 +66,7 @@ export default function NavBar() {
             // height={500}
             className="w-full h-auto"
             alt="Logo"
+            priority={true}
           />
         </div>
         <Menu
