@@ -7,9 +7,28 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Step } from "../types/step";
+import { Step } from "../types/form";
+import { fetchCEP } from "@/hooks/fetchCEP";
+import SelectFilter from "@/components/select";
+import { estados } from "@/utils/estadosBR";
 
 export default function Step2({ form }: Step) {
+  const handleCEP = async () => {
+    const cep = await fetchCEP(form.getValues("cepEmpresa"));
+    console.log(cep);
+
+    const campos = {
+      logradouroEmpresa: cep.logradouro,
+      bairroEmpresa: cep.bairro,
+      cidadeEmpresa: cep.localidade,
+      estadoEmpresa: cep.uf,
+    };
+
+    Object.entries(campos).forEach(([campo, valor]) => {
+      form.setValue(campo, valor);
+    });
+  };
+
   return (
     <Form {...form}>
       <section className="flex flex-col w-full h-max gap-2">
@@ -37,6 +56,10 @@ export default function Step2({ form }: Step) {
                       disabled={field.disabled}
                       id={field.name}
                       {...form.register(field.name)}
+                      onBlur={(e) => {
+                        form.register(field.name).onBlur(e);
+                        handleCEP();
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -91,27 +114,16 @@ export default function Step2({ form }: Step) {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
+          <SelectFilter
+            form={form}
+            fullWidth={true}
+            label="Estado"
             name="estadoEmpresa"
-            render={({ field }) => (
-              <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                <FormLabel>
-                  Estado <span className="text-red-600">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    className="w-full"
-                    required={true}
-                    type="text"
-                    disabled={field.disabled}
-                    id={field.name}
-                    {...form.register(field.name)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            options={estados.map((estado) => ({
+              label: estado.nome,
+              value: estado.sigla,
+            }))}
+            required={true}
           />
           <FormField
             control={form.control}
@@ -162,9 +174,7 @@ export default function Step2({ form }: Step) {
             name="complementoEmpresa"
             render={({ field }) => (
               <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                <FormLabel>
-                  Complemento
-                </FormLabel>
+                <FormLabel>Complemento</FormLabel>
                 <FormControl>
                   <Input
                     className="w-full"
@@ -184,9 +194,7 @@ export default function Step2({ form }: Step) {
             name="pontoReferenciaEmpresa"
             render={({ field }) => (
               <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                <FormLabel>
-                  Ponto de referência
-                </FormLabel>
+                <FormLabel>Ponto de referência</FormLabel>
                 <FormControl>
                   <Input
                     className="w-full"

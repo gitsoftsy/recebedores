@@ -1,6 +1,6 @@
 "use client";
 
-import NavBar from "@/components/NavBar";
+import NavBar from "@/components/navBar";
 import { UserProvider } from "@/contexts/UserContext";
 import { useEffect, useState } from "react";
 

@@ -6,7 +6,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Step } from "../types/step";
+import { Step } from "../types/form";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -55,10 +55,12 @@ export default function Step3({ form }: Step) {
         <div className="flex w-full flex-wrap -mr-3 mt-0">
           <FormField
             control={form.control}
-            name="cpnj"
+            name="nomeRepresentante"
             render={({ field }) => (
               <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                <FormLabel>CNPJ</FormLabel>
+                <FormLabel>
+                  Nome do Representante <span className="text-red-600">*</span>
+                </FormLabel>
                 <FormControl>
                   <Input
                     className="w-full"
@@ -75,11 +77,11 @@ export default function Step3({ form }: Step) {
           />
           <FormField
             control={form.control}
-            name="nomeFantasia"
+            name="emailRepresentante"
             render={({ field }) => (
               <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
                 <FormLabel>
-                  Nome Fantasia <span className="text-red-600">*</span>{" "}
+                  Email do Representante <span className="text-red-600">*</span>{" "}
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -94,82 +96,19 @@ export default function Step3({ form }: Step) {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                <FormLabel>E-mail</FormLabel>
-                <FormControl>
-                  <Input
-                    required={true}
-                    type="email"
-                    disabled={true}
-                    id={field.name}
-                    {...form.register(field.name)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="razaoSocial"
-            render={({ field }) => (
-              <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                <FormLabel>
-                  Razão Social <span className="text-red-600">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    required={true}
-                    type="text"
-                    disabled={field.disabled}
-                    id={field.name}
-                    {...form.register(field.name)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="site"
-            render={({ field }) => (
-              <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                <FormLabel>Site</FormLabel>
-                <FormControl>
-                  <Input
-                    required={true}
-                    type="text"
-                    disabled={field.disabled}
-                    id={field.name}
-                    {...form.register(field.name)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <div className="flex flex-wrap md:w-1/2 w-full flex-none items-end max-w-full mt-2">
+          <div className="flex flex-wrap md:w-1/2 w-full flex-none items-end max-w-full mt-3">
             <FormField
               control={form.control}
-              name="receitaAnual"
+              name="cpfRepresentante"
               render={({ field }) => (
-                <FormItem className="md:w-1/2 xs:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)]">
+                <FormItem className="xs:w-1/2 w-full xs:mt-0 mt-3 flex-none max-w-full px-[calc(1.5rem*0.5)]">
                   <FormLabel>
-                    Receita anual
-                    <span className="text-red-600">*</span>
+                    CPF do Representante <span className="text-red-600">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input
                       required={true}
-                      type="number"
-                      inputMode="numeric"
-                      pattern="[0-9]*"
+                      type="text"
                       disabled={field.disabled}
                       id={field.name}
                       {...form.register(field.name)}
@@ -181,36 +120,104 @@ export default function Step3({ form }: Step) {
             />
             <FormField
               control={form.control}
-              name="tipoEmpresa"
+              name="dataNascimento"
               render={({ field }) => (
-                <FormItem className="xs:w-1/2 w-full xs:mt-0 mt-3 flex-none max-w-full px-[calc(1.5rem*0.5)]">
+                <FormItem className="xs:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)]">
                   <FormLabel>
-                    Tipo da empresa <span className="text-red-600">*</span>
+                    Data de Nascimento
+                    <span className="text-red-600">*</span>
                   </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="1">m@example.com</SelectItem>
-                      <SelectItem value="2">m@google.com</SelectItem>
-                      <SelectItem value="3">m@support.com</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    <Input
+                      required={true}
+                      type="date"
+                      disabled={field.disabled}
+                      id={field.name}
+                      {...form.register(field.name)}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
+          <FormField
+            control={form.control}
+            name="nomeMaeRepresentante"
+            render={({ field }) => (
+              <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
+                <FormLabel>
+                  Nome da Mãe do Representante{" "}
+                  <span className="text-red-600">*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    required={true}
+                    type="text"
+                    disabled={field.disabled}
+                    id={field.name}
+                    {...form.register(field.name)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="ocupacaoProfissional"
+            render={({ field }) => (
+              <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
+                <FormLabel>
+                  Ocupação Profissional <span className="text-red-600">*</span>
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="1">m@example.com</SelectItem>
+                    <SelectItem value="2">m@google.com</SelectItem>
+                    <SelectItem value="3">m@support.com</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="ocupacaoProfissional"
+            render={({ field }) => (
+              <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
+                <FormLabel>
+                  Receita Mensal
+                  <span className="text-red-600">*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    required={true}
+                    type="number"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    disabled={field.disabled}
+                    id={field.name}
+                    {...form.register(field.name)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <div className="flex flex-col w-full my-2 gap-2">
             <h2 className="text-gray-500 font-medium text-xl mt-3">
-              Endereço do representandte
+              Endereço do representante
             </h2>
             <hr />
           </div>
@@ -295,16 +302,22 @@ export default function Step3({ form }: Step) {
                 <FormLabel>
                   Estado <span className="text-red-600">*</span>
                 </FormLabel>
-                <FormControl>
-                  <Input
-                    className="w-full"
-                    required={true}
-                    type="text"
-                    disabled={field.disabled}
-                    id={field.name}
-                    {...form.register(field.name)}
-                  />
-                </FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="CE">CE</SelectItem>
+                    <SelectItem value="PE">PE</SelectItem>
+                    <SelectItem value="SC">SC</SelectItem>
+                    <SelectItem value="SP">SP</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

@@ -6,7 +6,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Step } from "../types/step";
+import { Step } from "../types/form";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -15,8 +15,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useFetchOptions } from "../hooks/useFetchOptions";
+import SelectFilter from "@/components/select";
 
 export default function Step1({ form }: Step) {
+  const { tipoEmpresaOptions, bancoOptions } = useFetchOptions();
+
   return (
     <Form {...form}>
       <section>
@@ -147,32 +151,13 @@ export default function Step1({ form }: Step) {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
+            <SelectFilter 
+              form={form}
+              fullWidth={false}
+              label="Tipo da empresa"
               name="tipoEmpresa"
-              render={({ field }) => (
-                <FormItem className="xs:w-1/2 w-full xs:mt-0 mt-3 flex-none max-w-full px-[calc(1.5rem*0.5)]">
-                  <FormLabel>
-                    Tipo da empresa <span className="text-red-600">*</span>
-                  </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="1">m@example.com</SelectItem>
-                      <SelectItem value="2">m@google.com</SelectItem>
-                      <SelectItem value="3">m@support.com</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
+              options={tipoEmpresaOptions}
+              required={true}
             />
           </div>
 
@@ -199,32 +184,13 @@ export default function Step1({ form }: Step) {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
+            <SelectFilter 
+              form={form}
+              fullWidth={false}
+              label="Banco"
               name="banco"
-              render={({ field }) => (
-                <FormItem className="xs:w-1/2 w-full xs:mt-0 mt-3 flex-none max-w-full px-[calc(1.5rem*0.5)]">
-                  <FormLabel>
-                    Banco <span className="text-red-600">*</span>
-                  </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="1">m@example.com</SelectItem>
-                      <SelectItem value="2">m@google.com</SelectItem>
-                      <SelectItem value="3">m@support.com</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
+              options={bancoOptions}
+              required={true}
             />
           </div>
           <div className="flex flex-wrap md:w-1/2 w-full flex-none items-end max-w-full mt-3">
