@@ -12,6 +12,12 @@ export interface Banco {
   banco: string;
 }
 
+export interface OcupacaoProfissional {
+  idOcupacao: number;
+  codCBO: string;
+  ocupacao: string;
+}
+
 export interface Step {
   form: UseFormReturn<any>;
 }

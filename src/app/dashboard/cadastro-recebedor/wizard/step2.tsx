@@ -18,7 +18,7 @@ export default function Step2({ form }: Step) {
     console.log(cep);
 
     const campos = {
-      logradouroEmpresa: cep.logradouro,
+      enderecoEmpresa: cep.logradouro,
       bairroEmpresa: cep.bairro,
       cidadeEmpresa: cep.localidade,
       estadoEmpresa: cep.uf,

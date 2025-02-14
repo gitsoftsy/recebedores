@@ -23,8 +23,28 @@ import {
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { IoIosInformationCircleOutline } from "react-icons/io";
+import { useFetchOptions } from "../hooks/useFetchOptions";
+import SelectFilter from "@/components/select";
+import { estados } from "@/utils/estadosBR";
+import { fetchCEP } from "@/hooks/fetchCEP";
 
 export default function Step3({ form }: Step) {
+  const { ocupacaoProfissionalOptions } = useFetchOptions();
+  const handleCEP = async () => {
+    const cep = await fetchCEP(form.getValues("cepRepresentante"));
+    console.log(cep);
+
+    const campos = {
+      enderecoRepresentante: cep.logradouro,
+      bairroRepresentante: cep.bairro,
+      cidadeRepresentante: cep.localidade,
+      estadoRepresentante: cep.uf,
+    };
+
+    Object.entries(campos).forEach(([campo, valor]) => {
+      form.setValue(campo, valor);
+    });
+  };
   return (
     <Form {...form}>
       <section className="flex flex-col w-full h-max gap-2">
@@ -163,32 +183,13 @@ export default function Step3({ form }: Step) {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
+          <SelectFilter
+            form={form}
+            fullWidth={true}
+            label="Ocupação Profissional"
             name="ocupacaoProfissional"
-            render={({ field }) => (
-              <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                <FormLabel>
-                  Ocupação Profissional <span className="text-red-600">*</span>
-                </FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="1">m@example.com</SelectItem>
-                    <SelectItem value="2">m@google.com</SelectItem>
-                    <SelectItem value="3">m@support.com</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
+            options={ocupacaoProfissionalOptions}
+            required={true}
           />
           <FormField
             control={form.control}
@@ -240,6 +241,10 @@ export default function Step3({ form }: Step) {
                       disabled={field.disabled}
                       id={field.name}
                       {...form.register(field.name)}
+                      onBlur={(e) => {
+                        form.register(field.name).onBlur(e);
+                        handleCEP();
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -294,34 +299,18 @@ export default function Step3({ form }: Step) {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
+          <SelectFilter
+            form={form}
+            fullWidth={true}
+            label="Estado"
             name="estadoRepresentante"
-            render={({ field }) => (
-              <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                <FormLabel>
-                  Estado <span className="text-red-600">*</span>
-                </FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="CE">CE</SelectItem>
-                    <SelectItem value="PE">PE</SelectItem>
-                    <SelectItem value="SC">SC</SelectItem>
-                    <SelectItem value="SP">SP</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
+            options={estados.map((estado) => ({
+              label: estado.nome,
+              value: estado.sigla,
+            }))}
+            required={true}
           />
+
           <FormField
             control={form.control}
             name="cidadeRepresentante"
