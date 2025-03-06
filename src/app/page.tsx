@@ -23,6 +23,7 @@ export default function Home() {
   });
 
   const onSubmit = (data: FormData) => {
+    
     navigate.push("/dashboard/start");
   };
 

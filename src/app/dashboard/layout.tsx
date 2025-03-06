@@ -1,6 +1,9 @@
 "use client";
 
-import NavBar from "@/components/navBar";
+
+
+import NavBar from "@/components/NavBar";
+import NavBarResponsive from "@/components/NavBarResponsive";
 import { UserProvider } from "@/contexts/UserContext";
 import { useEffect, useState } from "react";
 
@@ -24,9 +27,10 @@ export default function LayoutDashboard({
   }, []);
 
   return (
-    <section className="flex w-full h-full min-h-screen">
+    <section className={`w-full h-full min-h-screen ${width >= 768 ? 'flex' : ''}`}>
+
       <UserProvider>
-        {width >= 768 ? <NavBar /> : ""}
+        {width >= 768 ? <NavBar /> : <NavBarResponsive />}
         <main className="h-full min-h-screen w-full overflow-auto overflow-x-hidden">
           {children}
         </main>
