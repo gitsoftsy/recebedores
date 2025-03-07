@@ -31,7 +31,7 @@ export default function LayoutDashboard({
 
       <UserProvider>
         {width >= 768 ? <NavBar /> : <NavBarResponsive />}
-        <main className="h-full min-h-screen w-full overflow-auto overflow-x-hidden">
+        <main className=" min-h-screen w-full overflow-auto overflow-x-hidden">
           {children}
         </main>
       </UserProvider>
