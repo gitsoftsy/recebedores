@@ -1,3 +1,4 @@
+import { Options } from "@/@types/options";
 import { UseFormReturn } from "react-hook-form";
 
 export interface TipoEmpresa {
@@ -20,4 +21,7 @@ export interface OcupacaoProfissional {
 
 export interface Step {
   form: UseFormReturn<any>;
+  tipoEmpresaOptions?: Options;
+  bancoOptions?: Options;
+  ocupacaoProfissionalOptions?: Options;
 }

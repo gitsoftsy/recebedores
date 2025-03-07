@@ -1,11 +1,16 @@
-import { Options } from "@/utils/types/options";
+import { Options } from "@/@types/options";
 import { useEffect, useState } from "react";
-import { fetchBanco, fetchOcupacaoProfissional, fetchTipoEmpresa } from "../utils/fetchOptions";
+import {
+  fetchBanco,
+  fetchOcupacaoProfissional,
+  fetchTipoEmpresa,
+} from "../actions/fetchOptions";
 
 export const useFetchOptions = () => {
   const [tipoEmpresaOptions, setTipoEmpresaOptions] = useState<Options>([]);
   const [bancoOptions, setBancoOptions] = useState<Options>([]);
-  const [ocupacaoProfissionalOptions, setOcupacaoProfissionalOptions] = useState<Options>([]);
+  const [ocupacaoProfissionalOptions, setOcupacaoProfissionalOptions] =
+    useState<Options>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,7 +23,7 @@ export const useFetchOptions = () => {
       }
     };
 
-    fetchData()
+    fetchData();
   }, []);
 
   return { tipoEmpresaOptions, bancoOptions, ocupacaoProfissionalOptions };

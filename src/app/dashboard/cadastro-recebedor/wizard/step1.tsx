@@ -8,18 +8,16 @@ import {
 } from "@/components/ui/form";
 import { Step } from "../types/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useFetchOptions } from "../hooks/useFetchOptions";
 import SelectFilter from "@/components/select";
+import { UserContext } from "@/contexts/UserContext";
+import { useContext } from "react";
 
-export default function Step1({ form }: Step) {
-  const { tipoEmpresaOptions, bancoOptions } = useFetchOptions();
+export default function Step1({
+  form,
+  bancoOptions,
+  tipoEmpresaOptions,
+}: Step) {
+  const {receiver} = useContext(UserContext);
 
   return (
     <Form {...form}>
@@ -37,6 +35,7 @@ export default function Step1({ form }: Step) {
                     required={true}
                     type="text"
                     disabled={true}
+                    defaultValue={receiver?.cnpj}
                     id={field.name}
                     {...form.register(field.name)}
                   />
@@ -77,6 +76,7 @@ export default function Step1({ form }: Step) {
                     required={true}
                     type="email"
                     disabled={true}
+                    defaultValue={receiver?.email}
                     id={field.name}
                     {...form.register(field.name)}
                   />
@@ -151,12 +151,12 @@ export default function Step1({ form }: Step) {
                 </FormItem>
               )}
             />
-            <SelectFilter 
+            <SelectFilter
               form={form}
               fullWidth={false}
               label="Tipo da empresa"
               name="tipoEmpresa"
-              options={tipoEmpresaOptions}
+              options={tipoEmpresaOptions ?? []}
               required={true}
             />
           </div>
@@ -184,12 +184,12 @@ export default function Step1({ form }: Step) {
                 </FormItem>
               )}
             />
-            <SelectFilter 
+            <SelectFilter
               form={form}
               fullWidth={false}
               label="Banco"
               name="banco"
-              options={bancoOptions}
+              options={bancoOptions ?? []}
               required={true}
             />
           </div>

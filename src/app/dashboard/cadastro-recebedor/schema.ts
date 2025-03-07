@@ -8,9 +8,20 @@ export const formSchema = z.object({
   site: z.string().nullable().optional(),
   receitaAnual: z.string(),
   tipoEmpresa: z.string(),
-  dataFundacaoEmpresa: z.string(),
+  dataFundacaoEmpresa: z
+  .string()
+  .refine(
+    (value) => {
+      const today = new Date();
+      const selectedDate = new Date(value);
+      return selectedDate <= today;
+    },
+    {
+      message: "A data de fundação não pode ser maior que a data atual.",
+    }
+  ),
   banco: z.string(),
-  agencia: z.number(),
+  agencia: z.string(),
   conta: z.string().nullable().optional(),
   cepEmpresa: z.string(),
   enderecoEmpresa: z.string(),

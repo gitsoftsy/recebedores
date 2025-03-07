@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 import { HiCash } from "react-icons/hi";
 import { IoExitOutline } from "react-icons/io5";
@@ -19,7 +18,7 @@ import logoUrucui from "/public/logo-urucui.svg";
 
 export default function NavBar() {
   const [collapsed, setCollapsed] = useState(false);
-  const auth = useAuth();
+  
 
   return (
     <Sidebar
@@ -142,7 +141,7 @@ export default function NavBar() {
           Quero bolsa
         </MenuItem>
         
-        <MenuItem icon={<IoExitOutline size={20} />} onClick={auth.logout}>
+        <MenuItem icon={<IoExitOutline size={20} />} onClick={() => {}}>
           Sair
         </MenuItem>
       </Menu>

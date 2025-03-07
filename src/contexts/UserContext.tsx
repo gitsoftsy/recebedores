@@ -1,53 +1,61 @@
 "use client";
 
-import { User } from "@/utils/types/user";
+import { fetchReceiverData } from "@/utils/receiver";
 import { createContext, ReactNode, useEffect, useState } from "react";
 
 interface UserProviderProps {
   children: ReactNode;
 }
 
+export interface ReceiverData {
+  cnpj: string;
+  email: string;
+}
+
 export interface UserContextType {
   width: number;
   setWidth: (width: number) => void;
-
-  user: User | null;
-  setUser: (user: User | null) => void;
+  receiver: ReceiverData | null;
+  setReceiver: (receiver: ReceiverData | null) => void;
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const UserContext = createContext<UserContextType | undefined>(
-  undefined
-);
+export const UserContext = createContext<UserContextType>({
+  receiver: null,
+  setReceiver: () => {},
+  width: 1920,
+  setWidth: () => {},
+});
 
 export function UserProvider({ children }: UserProviderProps) {
-  const [user, setUser] = useState<User | null>(null);
+  const [receiver, setReceiver] = useState<ReceiverData | null>(null);
   const [width, setWidth] = useState<number>(1920);
 
   useEffect(() => {
-    const storedData = localStorage.getItem("userStorage");
+    const loadReceiverData = async () => {
+      try {
+        // const receiverId = await getReceiverIdFromCookie();
+        const data = await fetchReceiverData("1", "60");
 
-    if (storedData != undefined) {
-      sessionStorage.setItem("userStorage", JSON.stringify(storedData));
-      setUser(JSON.parse(storedData));
-    } else {
-      const storedUser = sessionStorage.getItem("userStorage");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
+        if (data) {
+          setReceiver(data);
+        }
+      } catch (error) {
+        console.error("Erro ao carregar dados do recebedor:", error);
       }
-    }
-
-    const handleResize = () => {
-      setWidth(window.innerWidth);
     };
 
+    loadReceiverData();
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const values: UserContextType = {
-    user,
-    setUser,
+    receiver,
+    setReceiver,
     width,
     setWidth,
   };

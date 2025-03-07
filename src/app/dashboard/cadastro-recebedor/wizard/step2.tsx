@@ -12,7 +12,7 @@ import { fetchCEP } from "@/hooks/fetchCEP";
 import SelectFilter from "@/components/select";
 import { estados } from "@/utils/estadosBR";
 
-export default function Step2({ form }: Step) {
+export default function Step2({ form, ocupacaoProfissionalOptions }: Step) {
   const handleCEP = async () => {
     const cep = await fetchCEP(form.getValues("cepEmpresa"));
     console.log(cep);

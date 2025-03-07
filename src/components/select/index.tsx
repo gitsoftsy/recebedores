@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Options } from "@/utils/types/options";
+import { Options } from "@/@types/options";
 
 interface SelectFilterProps {
   form: UseFormReturn<any>;

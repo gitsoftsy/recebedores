@@ -1,5 +1,5 @@
 import { apiDev } from "@/services/api";
-import { Options } from "@/utils/types/options";
+import { Options } from "@/@types/options";
 import { Banco, OcupacaoProfissional, TipoEmpresa } from "../types/form";
 import { Bancos, Ocupacoes, TiposEmpresas } from "../types/request";
 
@@ -11,7 +11,6 @@ export const fetchTipoEmpresa = async (): Promise<Options> => {
     label: item.tipoEmpresa,
   }));
 };
-
 
 export const fetchBanco = async (): Promise<Options> => {
   const response = await apiDev.get<Bancos>("/bancos");
