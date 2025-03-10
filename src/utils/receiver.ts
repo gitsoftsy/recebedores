@@ -5,25 +5,15 @@ import { cookies } from "next/headers";
 
 export async function getReceiverIdFromCookie() {
   const cookieStore = await cookies();
-  const receiverId = cookieStore.get("receiverId");
+  const dataRecebedor = cookieStore.get("dataRecebedor");
 
-  if (!receiverId) {
+  if (!dataRecebedor ) {
     throw new Error("ID do recebedor não encontrado no cookie");
   }
 
-  return receiverId.value;
+  return dataRecebedor.value;
 }
 
-export async function getContaIdFromCookie() {
-  const cookieStore = await cookies();
-  const contaId = cookieStore.get("idConta");
-
-  if (!contaId) {
-    throw new Error("ID da conta não encontrado no cookie");
-  }
-
-  return contaId.value;
-}
 export async function fetchReceiverData(idAccount: string, idReceiver: string) {
   const response = await fetch(
     `https://api.softsy.io/api-educacional-recebedor/recebedorTemp/${idReceiver}`,

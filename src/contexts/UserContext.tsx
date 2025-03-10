@@ -36,6 +36,7 @@ export function UserProvider({ children, initialReceiver }: UserProviderProps) {
   const [width, setWidth] = useState<number>(1920);
 
 
+
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
