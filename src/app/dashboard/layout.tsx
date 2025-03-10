@@ -1,14 +1,16 @@
 import NavBar from "@/components/NavBar";
 import NavBarResponsive from "@/components/NavBarResponsive";
 import { UserProvider } from "@/contexts/UserContext";
-import { fetchReceiverData } from "@/utils/receiver";
+import { fetchReceiverData, getContaIdFromCookie, getReceiverIdFromCookie } from "@/utils/receiver";
 
 export default async function LayoutDashboard({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const receiver = await fetchReceiverData("1", "60");
+  const receiverId = await getReceiverIdFromCookie();
+  const contaId = await getContaIdFromCookie();
+  const receiver = await fetchReceiverData(contaId, receiverId);
 
   return (
     <section className="w-full h-full min-h-screen flex md:flex-row flex-col">

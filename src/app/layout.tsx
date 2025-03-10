@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ToastContainer } from "react-toastify";
 import "./globals.css";
+import { getReceiverIdFromCookie } from "@/utils/receiver";
 
 export const metadata: Metadata = {
   title: "Create Next App",

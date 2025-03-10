@@ -35,8 +35,6 @@ export function UserProvider({ children, initialReceiver }: UserProviderProps) {
   );
   const [width, setWidth] = useState<number>(1920);
 
-  // const receiverId = await getReceiverIdFromCookie();
-  // const data = await fetchReceiverData("1", "60");
 
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);

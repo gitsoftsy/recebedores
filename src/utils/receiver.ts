@@ -14,6 +14,16 @@ export async function getReceiverIdFromCookie() {
   return receiverId.value;
 }
 
+export async function getContaIdFromCookie() {
+  const cookieStore = await cookies();
+  const contaId = cookieStore.get("idConta");
+
+  if (!contaId) {
+    throw new Error("ID da conta não encontrado no cookie");
+  }
+
+  return contaId.value;
+}
 export async function fetchReceiverData(idAccount: string, idReceiver: string) {
   const response = await fetch(
     `https://api.softsy.io/api-educacional-recebedor/recebedorTemp/${idReceiver}`,
@@ -32,8 +42,8 @@ export async function fetchReceiverData(idAccount: string, idReceiver: string) {
 
   const receiver: ReceiverData = {
     id: data.idRecebedorTemp,
-    contaId: data.conta.id,
-    cnpj: data.conta.cnpj,
+    contaId: data.idConta,
+    cnpj: data.documento,
     email: data.email,
   };
   return receiver;

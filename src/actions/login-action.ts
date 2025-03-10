@@ -8,9 +8,16 @@ export async function loginAction(email: string, senha: string) {
     const response = await api.post("/login", { email, senha });
 
     if (response.status === 200) {
-      const { idRecebedor } = response.data;
+      const { idRecebedor, idConta } = response.data;
 
       const cookieStore = await cookies();
+
+
+      cookieStore.set("idConta", idConta, {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 30,
+        httpOnly: true,
+      });
 
       cookieStore.set("receiverId", idRecebedor, {
         path: "/",
