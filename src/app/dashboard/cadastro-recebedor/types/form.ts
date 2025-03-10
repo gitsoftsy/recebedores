@@ -1,5 +1,5 @@
 import { Options } from "@/@types/options";
-import { UseFormReturn } from "react-hook-form";
+import { FormDataWizard } from "../wizard/stepForm";
 
 export interface TipoEmpresa {
   idTipoEmpresa: number;
@@ -20,8 +20,12 @@ export interface OcupacaoProfissional {
 }
 
 export interface Step {
-  form: UseFormReturn<any>;
   tipoEmpresaOptions?: Options;
   bancoOptions?: Options;
   ocupacaoProfissionalOptions?: Options;
+  formData?: FormDataWizard;
+  nextStep?: () => void;
+  prevStep?: () => void;
+  setFormData?: (data: any) => void;
+  handleSubmit?: (data: FormDataWizard) => void;
 }

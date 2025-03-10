@@ -1,14 +1,13 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { FormData, formSchema } from "../schema";
+import { useContext, useState } from "react";
 import Step1 from "./step1";
 import Step2 from "./step2";
 import Step3 from "./step3";
 import { Options } from "@/@types/options";
-import { Button } from "@/components/ui/button";
+import { Step1FormData, Step2FormData, Step3FormData } from "../schema";
+import { api } from "@/services/api";
+import { UserContext } from "@/contexts/UserContext";
 
 export interface StepFormProps {
   tipoEmpresaOptions: Options;
@@ -16,28 +15,49 @@ export interface StepFormProps {
   ocupacaoProfissionalOptions: Options;
 }
 
+export interface FormDataWizard {
+  step1Data: Step1FormData;
+  step2Data: Step2FormData;
+  step3Data: Step3FormData;
+}
+
 export default function StepForm({
   tipoEmpresaOptions,
   bancoOptions,
   ocupacaoProfissionalOptions,
 }: StepFormProps) {
-  const [currentStep, setCurrentStep] = useState(1);
-
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-    mode: "onChange",
+  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [formData, setFormData] = useState<FormDataWizard>({
+    step1Data: {} as Step1FormData,
+    step2Data: {} as Step2FormData,
+    step3Data: {} as Step3FormData,
   });
+  const { receiver } = useContext(UserContext);
 
-  const nextStep = () => {
-    if (form.formState.isValid) {
-      setCurrentStep((prev) => prev + 1);
-    }
-  };
+  const nextStep = () => setCurrentStep((prev) => prev + 1);
   const prevStep = () => setCurrentStep((prev) => prev - 1);
+
+  async function handleSubmit(data: FormDataWizard) {
+    const recebedorPjData = {
+      ...data.step1Data,
+      ...data.step2Data,
+      ...data.step3Data,
+      idRecebedorTemp: receiver?.id,
+    };
+
+    try {
+      const response = await api.post("/recebedorPj", recebedorPjData, {
+        headers: {
+          idConta: receiver?.contaId,
+        },
+      });
+    } catch (error) {
+      console.error("Erro ao enviar dados", error);
+    }
+  }
 
   return (
     <>
-      {/* Progress Bar */}
       <div className="mb-8">
         <div className="flex justify-between mb-2">
           {["1", "2", "3"].map((label, index) => (
@@ -59,58 +79,29 @@ export default function StepForm({
         </div>
       </div>
 
-      {/* Form Steps */}
       {currentStep === 1 && (
         <Step1
-          form={form}
+          nextStep={nextStep}
+          setFormData={setFormData}
           tipoEmpresaOptions={tipoEmpresaOptions}
           bancoOptions={bancoOptions}
         />
       )}
       {currentStep === 2 && (
         <Step2
-          form={form}
+          prevStep={prevStep}
+          setFormData={setFormData}
+          nextStep={nextStep}
+        />
+      )}
+      {currentStep === 3 && (
+        <Step3
+          prevStep={prevStep}
+          formData={formData}
+          handleSubmit={handleSubmit}
           ocupacaoProfissionalOptions={ocupacaoProfissionalOptions}
         />
       )}
-      {currentStep === 3 && <Step3 form={form} />}
-
-      {/* Navigation Buttons */}
-      <div
-        className={`flex ${
-          currentStep < 2 ? "justify-end" : "justify-between"
-        } mt-8`}
-      >
-        {currentStep > 1 && (
-          <button
-            type="button"
-            onClick={prevStep}
-            className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400"
-          >
-            Voltar
-          </button>
-        )}
-        {currentStep < 3 && (
-          <Button
-            type="button"
-            onClick={nextStep}
-            disabled={!form.formState.isValid}
-            className="bg-green-500 hover:bg-green-600 text-white"
-          >
-            Próximo
-          </Button>
-        )}
-
-        {currentStep === 3 && (
-          <button
-            type="submit"
-            disabled={!form.formState.isValid}
-            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
-          >
-            Cadastrar
-          </button>
-        )}
-      </div>
     </>
   );
 }

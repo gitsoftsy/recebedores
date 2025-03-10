@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -15,41 +14,24 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import axios from 'axios';
-import { cookies } from "next/headers";
-import { api } from "@/services/api";
+import { loginAction } from "@/actions/login-action";
 
-export default function  Home() {
+export default function Home() {
   const navigate = useRouter();
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
-  
+
   const onSubmit = async (data: FormData) => {
-    try {
-      const response = await api.post('/login', {
-        email: data.email,
-        senha: data.senha,
-      });
+    const result = await loginAction(data.email, data.senha);
 
-      if (response.status === 200) {
-        const { idRecebedor, nome, documento, tabela } = response.data;
-        const cookieStore = await cookies();
-
-        cookieStore.set('receiverId', idRecebedor, {
-          path: '/',
-          maxAge: 60 * 60 * 24 * 30,
-        });
-
-        navigate.push("/dashboard/start");
-        form.reset(); 
-      }
-    } catch (error) {
-      console.error('Erro ao fazer login:', error);
-
+    if (result && result.success) {
+      navigate.push("/dashboard/start");
+      form.reset();
+    } else {
       form.setError("root", {
         type: "manual",
-        message: "Erro ao fazer login. Verifique suas credenciais e tente novamente.",
+        message: result?.message || "An error occurred",
       });
     }
   };
@@ -63,7 +45,6 @@ export default function  Home() {
         >
           <h1 className="font-jkabode text-8xl mb-4">Login</h1>
 
-          
           {form.formState.errors.root && (
             <div className="text-red-500 mb-4">
               {form.formState.errors.root.message}
@@ -86,7 +67,7 @@ export default function  Home() {
                     placeholder="email@email.com"
                   />
                 </FormControl>
-                <FormMessage /> 
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -109,7 +90,7 @@ export default function  Home() {
                 <a href="#" className="text-sm text-blue-500 hover:underline ">
                   Esqueci a senha
                 </a>
-                <FormMessage /> 
+                <FormMessage />
               </FormItem>
             )}
           />

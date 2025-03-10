@@ -1,36 +1,24 @@
-"use client";
-
-
-
 import NavBar from "@/components/NavBar";
 import NavBarResponsive from "@/components/NavBarResponsive";
 import { UserProvider } from "@/contexts/UserContext";
-import { useEffect, useState } from "react";
+import { fetchReceiverData } from "@/utils/receiver";
 
-export default function LayoutDashboard({
+export default async function LayoutDashboard({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const isClient = typeof window !== "undefined";
-  const [width, setWidth] = useState<number>(
-    isClient ? window.innerWidth : 768
-  );
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWidth(window.innerWidth);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const receiver = await fetchReceiverData("1", "60");
 
   return (
-    <section className={`w-full h-full min-h-screen ${width >= 768 ? 'flex' : ''}`}>
-
-      <UserProvider>
-        {width >= 768 ? <NavBar /> : <NavBarResponsive />}
+    <section className="w-full h-full min-h-screen flex md:flex-row flex-col">
+      <UserProvider initialReceiver={receiver}>
+        <div className="hidden md:block">
+          <NavBar />
+        </div>
+        <div className="block md:hidden">
+          <NavBarResponsive />
+        </div>
         <main className=" min-h-screen w-full overflow-auto overflow-x-hidden">
           {children}
         </main>

@@ -1,5 +1,4 @@
 import {
-  Form,
   FormControl,
   FormField,
   FormItem,
@@ -8,128 +7,107 @@ import {
 } from "@/components/ui/form";
 import { Step } from "../types/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { IoIosInformationCircleOutline } from "react-icons/io";
-import { useFetchOptions } from "../hooks/useFetchOptions";
 import SelectFilter from "@/components/select";
 import { estados } from "@/utils/estadosBR";
 import { fetchCEP } from "@/hooks/fetchCEP";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Step3FormData, step3Schema } from "../schema";
+import { FormProvider, useForm } from "react-hook-form";
+import { PatternFormat } from "react-number-format";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertTriangle } from "lucide-react";
 
-export default function Step3({ form }: Step) {
-  const { ocupacaoProfissionalOptions } = useFetchOptions();
+export default function Step3({
+  prevStep,
+  handleSubmit,
+  formData,
+  ocupacaoProfissionalOptions,
+}: Step) {
+  const form = useForm<Step3FormData>({
+    resolver: zodResolver(step3Schema),
+    mode: "onChange",
+  });
+
   const handleCEP = async () => {
-    const cep = await fetchCEP(form.getValues("cepRepresentante"));
-    console.log(cep);
+    const cep = form.getValues("cepRespLegal");
 
-    const campos = {
-      enderecoRepresentante: cep.logradouro,
-      bairroRepresentante: cep.bairro,
-      cidadeRepresentante: cep.localidade,
-      estadoRepresentante: cep.uf,
-    };
+    if (!cep) {
+      form.setError("cepRespLegal", {
+        type: "manual",
+        message: "CEP é obrigatório.",
+      });
+      return;
+    }
 
-    Object.entries(campos).forEach(([campo, valor]) => {
-      form.setValue(campo, valor);
-    });
+    form.clearErrors("cepRespLegal");
+    try {
+      const dadosCEP = await fetchCEP(cep);
+
+      if (!dadosCEP || !dadosCEP.logradouro) {
+        form.setError("cepRespLegal", {
+          type: "manual",
+          message: "CEP não encontrado.",
+        });
+        return;
+      }
+
+      form.setValue("enderecoRespLegal", dadosCEP.logradouro || "");
+      form.setValue("bairroRespLegal", dadosCEP.bairro || "");
+      form.setValue("cidadeRespLegal", dadosCEP.localidade || "");
+      form.setValue("estadoRespLegal", dadosCEP.uf || "");
+    } catch (error) {
+      console.error("Erro ao buscar CEP:", error);
+      form.setError("cepRespLegal", {
+        type: "manual",
+        message: "Erro ao buscar CEP. Tente novamente.",
+      });
+    }
   };
+
   return (
-    <Form {...form}>
-      <section className="flex flex-col w-full h-max gap-2">
-        <h2 className="text-gray-500 font-medium text-xl flex items-end gap-2">
-          Representante Legal
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <IoIosInformationCircleOutline
-                  size={24}
-                  className="m-0 cursor-pointer"
-                />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>
-                  O representante deve ser um sócio registrado no Quadro de
-                  Sócios e devidamente qualificado no QSA (Quadro de Sócios e
-                  Administradores) da empresa. No momento, não são aceitos
-                  Administradores, mesmo que qualificados no QSA, nem
-                  Procuradores
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </h2>
-        <hr />
+    <FormProvider {...form}>
+      <form
+       onSubmit={form.handleSubmit((data) => {
+        if (handleSubmit) {
+          handleSubmit({
+            ...formData!,
+            step3Data: data,
+          });
+        }
+      })}
+      >
+        <section className="flex flex-col w-full h-max gap-2">
+          <Alert variant="default" className="mb-2">
+            <AlertTriangle className="size-4" />
+            <AlertTitle>Importante!</AlertTitle>
+            <AlertDescription>
+              <p>
+                O representante deve ser um sócio registrado no Quadro de Sócios
+                e devidamente qualificado no QSA (Quadro de Sócios e
+                Administradores) da empresa. No momento, não são aceitos
+                Administradores, mesmo que qualificados no QSA, nem Procuradores
+              </p>
+            </AlertDescription>
+          </Alert>
 
-        <div className="flex w-full flex-wrap -mr-3 mt-0">
-          <FormField
-            control={form.control}
-            name="nomeRepresentante"
-            render={({ field }) => (
-              <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                <FormLabel>
-                  Nome do Representante <span className="text-red-600">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    className="w-full"
-                    required={true}
-                    type="text"
-                    disabled={true}
-                    id={field.name}
-                    {...form.register(field.name)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="emailRepresentante"
-            render={({ field }) => (
-              <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                <FormLabel>
-                  Email do Representante <span className="text-red-600">*</span>{" "}
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    required={true}
-                    type="text"
-                    disabled={field.disabled}
-                    id={field.name}
-                    {...form.register(field.name)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="flex flex-wrap md:w-1/2 w-full flex-none items-end max-w-full mt-3">
+          <h2 className="text-gray-500 font-medium text-xl flex items-end gap-2">
+            Representante Legal
+          </h2>
+          <hr />
+
+          <div className="flex w-full flex-wrap -mr-3 mt-0">
             <FormField
               control={form.control}
-              name="cpfRepresentante"
+              name="nomeRespLegal"
               render={({ field }) => (
-                <FormItem className="xs:w-1/2 w-full xs:mt-0 mt-3 flex-none max-w-full px-[calc(1.5rem*0.5)]">
+                <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
                   <FormLabel>
-                    CPF do Representante <span className="text-red-600">*</span>
+                    Nome do Representante<span className="text-red-600">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input
-                      required={true}
                       type="text"
-                      disabled={field.disabled}
                       id={field.name}
                       {...form.register(field.name)}
                     />
@@ -140,18 +118,16 @@ export default function Step3({ form }: Step) {
             />
             <FormField
               control={form.control}
-              name="dataNascimento"
+              name="emailRespLegal"
               render={({ field }) => (
-                <FormItem className="xs:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)]">
+                <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
                   <FormLabel>
-                    Data de Nascimento
+                    Email do Representante
                     <span className="text-red-600">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input
-                      required={true}
-                      type="date"
-                      disabled={field.disabled}
+                      type="text"
                       id={field.name}
                       {...form.register(field.name)}
                     />
@@ -160,91 +136,199 @@ export default function Step3({ form }: Step) {
                 </FormItem>
               )}
             />
-          </div>
-          <FormField
-            control={form.control}
-            name="nomeMaeRepresentante"
-            render={({ field }) => (
-              <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                <FormLabel>
-                  Nome da Mãe do Representante{" "}
-                  <span className="text-red-600">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    required={true}
-                    type="text"
-                    disabled={field.disabled}
-                    id={field.name}
-                    {...form.register(field.name)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <SelectFilter
-            form={form}
-            fullWidth={true}
-            label="Ocupação Profissional"
-            name="ocupacaoProfissional"
-            options={ocupacaoProfissionalOptions}
-            required={true}
-          />
-          <FormField
-            control={form.control}
-            name="ocupacaoProfissional"
-            render={({ field }) => (
-              <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                <FormLabel>
-                  Receita Mensal
-                  <span className="text-red-600">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    required={true}
-                    type="number"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    disabled={field.disabled}
-                    id={field.name}
-                    {...form.register(field.name)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <div className="flex flex-col w-full my-2 gap-2">
-            <h2 className="text-gray-500 font-medium text-xl mt-3">
-              Endereço do representante
-            </h2>
-            <hr />
-          </div>
-          <div className="flex flex-wrap md:w-1/2 w-full flex-none items-end max-w-full mt-3">
+            <div className="flex flex-wrap md:w-1/2 w-full flex-none items-end max-w-full mt-3">
+              <FormField
+                control={form.control}
+                name="cpfRespLegal"
+                render={({ field }) => (
+                  <FormItem className="xs:w-1/2 w-full xs:mt-0 mt-3 flex-none max-w-full px-[calc(1.5rem*0.5)]">
+                    <FormLabel>
+                      CPF do Representante
+                      <span className="text-red-600">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <PatternFormat
+                        format="###.###.###-##"
+                        customInput={Input}
+                        id={field.name}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dataNascimentoRespLegal"
+                render={({ field }) => (
+                  <FormItem className="xs:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)]">
+                    <FormLabel>
+                      Data de Nascimento<span className="text-red-600">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="date"
+                        id={field.name}
+                        {...form.register(field.name)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
-              name="cepRepresentante"
+              name="nomeMaeRespLegal"
               render={({ field }) => (
-                <FormItem className="xs:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)]">
+                <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
                   <FormLabel>
-                    CEP
+                    Nome da Mãe do Representante
                     <span className="text-red-600">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input
-                      required={true}
+                      type="text"
+                      id={field.name}
+                      {...form.register(field.name)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <SelectFilter
+              form={form}
+              fullWidth={true}
+              label="Ocupação Profissional"
+              name="ocupacaoProfissional"
+              options={ocupacaoProfissionalOptions ?? []}
+              required={true}
+            />
+            <FormField
+              control={form.control}
+              name="rendaMensal"
+              render={({ field }) => (
+                <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
+                  <FormLabel>
+                    Receita Mensal
+                    <span className="text-red-600">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
                       type="number"
                       inputMode="numeric"
                       pattern="[0-9]*"
-                      disabled={field.disabled}
                       id={field.name}
                       {...form.register(field.name)}
-                      onBlur={(e) => {
-                        form.register(field.name).onBlur(e);
-                        handleCEP();
-                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="flex flex-col w-full my-2 gap-2">
+              <h2 className="text-gray-500 font-medium text-xl mt-3">
+                Endereço do representante
+              </h2>
+              <hr />
+            </div>
+            <div className="flex flex-wrap md:w-1/2 w-full flex-none items-end max-w-full mt-3">
+              <FormField
+                control={form.control}
+                name="cepRespLegal"
+                render={({ field }) => (
+                  <FormItem className="xs:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)]">
+                    <FormLabel>
+                      CEP
+                      <span className="text-red-600">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <PatternFormat
+                        id={field.name}
+                        format="#####-###"
+                        customInput={Input}
+                        {...field}
+                        onBlur={() => {
+                          field.onBlur();
+                          handleCEP();
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="numeroRespLegal"
+                render={({ field }) => (
+                  <FormItem className="xs:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)]">
+                    <FormLabel>
+                      Número
+                      <span className="text-red-600">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        id={field.name}
+                        {...form.register(field.name)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormField
+              control={form.control}
+              name="enderecoRespLegal"
+              render={({ field }) => (
+                <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
+                  <FormLabel>
+                    Endereço<span className="text-red-600">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      id={field.name}
+                      {...form.register(field.name)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <SelectFilter
+              form={form}
+              fullWidth={true}
+              label="Estado"
+              name="estadoRepresentante"
+              options={estados.map((estado) => ({
+                label: estado.nome,
+                value: estado.sigla,
+              }))}
+              required={true}
+            />
+
+            <FormField
+              control={form.control}
+              name="cidadeRespLegal"
+              render={({ field }) => (
+                <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
+                  <FormLabel>
+                    Cidade<span className="text-red-600">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      id={field.name}
+                      {...form.register(field.name)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -253,20 +337,15 @@ export default function Step3({ form }: Step) {
             />
             <FormField
               control={form.control}
-              name="numeroRepresentante"
+              name="bairroRespLegal"
               render={({ field }) => (
-                <FormItem className="xs:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)]">
+                <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
                   <FormLabel>
-                    Número
-                    <span className="text-red-600">*</span>
+                    Bairro<span className="text-red-600">*</span>
                   </FormLabel>
                   <FormControl>
                     <Input
-                      required={true}
-                      type="number"
-                      inputMode="numeric"
-                      pattern="[0-9]*"
-                      disabled={field.disabled}
+                      type="text"
                       id={field.name}
                       {...form.register(field.name)}
                     />
@@ -275,174 +354,101 @@ export default function Step3({ form }: Step) {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="complementoRespLegal"
+              render={({ field }) => (
+                <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
+                  <FormLabel>Complemento</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      id={field.name}
+                      {...form.register(field.name)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="pontoReferenciaRespLegal"
+              render={({ field }) => (
+                <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
+                  <FormLabel>Ponto de referência</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      id={field.name}
+                      {...form.register(field.name)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="flex flex-col w-full my-2 gap-2">
+              <h2 className="text-gray-500 font-medium text-xl mt-3">
+                Contatos do representante
+              </h2>
+              <hr />
+            </div>
+            <FormField
+              control={form.control}
+              name="telefoneRespLegal"
+              render={({ field }) => (
+                <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
+                  <FormLabel>Telefone fixo</FormLabel>
+                  <FormControl>
+                    <PatternFormat
+                      format="(##) ####-####"
+                      customInput={Input}
+                      id={field.name}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="celularRespLegal"
+              render={({ field }) => (
+                <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
+                  <FormLabel>Telefone celular</FormLabel>
+                  <FormControl>
+                    <PatternFormat
+                      format="(##) #####-####"
+                      customInput={Input}
+                      id={field.name}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
-
-          <FormField
-            control={form.control}
-            name="enderecoRepresentante"
-            render={({ field }) => (
-              <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                <FormLabel>
-                  Endereço <span className="text-red-600">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    className="w-full"
-                    required={true}
-                    type="text"
-                    disabled={field.disabled}
-                    id={field.name}
-                    {...form.register(field.name)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <SelectFilter
-            form={form}
-            fullWidth={true}
-            label="Estado"
-            name="estadoRepresentante"
-            options={estados.map((estado) => ({
-              label: estado.nome,
-              value: estado.sigla,
-            }))}
-            required={true}
-          />
-
-          <FormField
-            control={form.control}
-            name="cidadeRepresentante"
-            render={({ field }) => (
-              <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                <FormLabel>
-                  Cidade <span className="text-red-600">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    className="w-full"
-                    required={true}
-                    type="text"
-                    disabled={field.disabled}
-                    id={field.name}
-                    {...form.register(field.name)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="bairroRepresentante"
-            render={({ field }) => (
-              <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                <FormLabel>
-                  Bairro <span className="text-red-600">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    className="w-full"
-                    required={true}
-                    type="text"
-                    disabled={field.disabled}
-                    id={field.name}
-                    {...form.register(field.name)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="complementoRepresentante"
-            render={({ field }) => (
-              <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                <FormLabel>Complemento</FormLabel>
-                <FormControl>
-                  <Input
-                    className="w-full"
-                    required={true}
-                    type="text"
-                    disabled={field.disabled}
-                    id={field.name}
-                    {...form.register(field.name)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="pontoReferenciaRepresentante"
-            render={({ field }) => (
-              <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                <FormLabel>Ponto de referência</FormLabel>
-                <FormControl>
-                  <Input
-                    className="w-full"
-                    required={true}
-                    type="text"
-                    disabled={field.disabled}
-                    id={field.name}
-                    {...form.register(field.name)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <div className="flex flex-col w-full my-2 gap-2">
-            <h2 className="text-gray-500 font-medium text-xl mt-3">
-              Contatos da empresa
-            </h2>
-            <hr />
-          </div>
-          <FormField
-            control={form.control}
-            name="telefoneFixoRepresentante"
-            render={({ field }) => (
-              <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                <FormLabel>Telefone fixo</FormLabel>
-                <FormControl>
-                  <Input
-                    className="w-full"
-                    required={true}
-                    type="text"
-                    disabled={field.disabled}
-                    id={field.name}
-                    {...form.register(field.name)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="telefoneCelularRepresentante"
-            render={({ field }) => (
-              <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                <FormLabel>Telefone celular</FormLabel>
-                <FormControl>
-                  <Input
-                    required={true}
-                    type="text"
-                    disabled={field.disabled}
-                    id={field.name}
-                    {...form.register(field.name)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        </section>
+        <div className="flex justify-between mt-8">
+          <Button
+            type="button"
+            onClick={prevStep}
+            className="bg-gray-300 text-gray-800 hover:bg-gray-400"
+          >
+            Voltar
+          </Button>
+          <Button
+            type="submit"
+            className="bg-green-500 hover:bg-green-600 text-white"
+          >
+            Cadastrar
+          </Button>
         </div>
-      </section>
-    </Form>
+      </form>
+    </FormProvider>
   );
 }

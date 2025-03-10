@@ -5,9 +5,12 @@ import { createContext, ReactNode, useEffect, useState } from "react";
 
 interface UserProviderProps {
   children: ReactNode;
+  initialReceiver: ReceiverData | null;
 }
 
 export interface ReceiverData {
+  id: number;
+  contaId: number;
   cnpj: string;
   email: string;
 }
@@ -26,26 +29,14 @@ export const UserContext = createContext<UserContextType>({
   setWidth: () => {},
 });
 
-export function UserProvider({ children }: UserProviderProps) {
-  const [receiver, setReceiver] = useState<ReceiverData | null>(null);
+export function UserProvider({ children, initialReceiver }: UserProviderProps) {
+  const [receiver, setReceiver] = useState<ReceiverData | null>(
+    initialReceiver
+  );
   const [width, setWidth] = useState<number>(1920);
 
-  useEffect(() => {
-    const loadReceiverData = async () => {
-      try {
-        // const receiverId = await getReceiverIdFromCookie();
-        const data = await fetchReceiverData("1", "60");
-
-        if (data) {
-          setReceiver(data);
-        }
-      } catch (error) {
-        console.error("Erro ao carregar dados do recebedor:", error);
-      }
-    };
-
-    loadReceiverData();
-  }, []);
+  // const receiverId = await getReceiverIdFromCookie();
+  // const data = await fetchReceiverData("1", "60");
 
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);

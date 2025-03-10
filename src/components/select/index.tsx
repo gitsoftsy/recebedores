@@ -43,13 +43,12 @@ export default function SelectFilter({
           } flex-none max-w-full px-[calc(1.5rem*0.5)]`}
         >
           <FormLabel>
-            {label} {required && <span className="text-red-600">*</span>}
+            {label}{required && <span className="text-red-600">*</span>}
           </FormLabel>
           <Select
             onValueChange={field.onChange}
             defaultValue={field.value}
             value={field.value}
-            required={required}
           >
             <FormControl>
               <SelectTrigger>
