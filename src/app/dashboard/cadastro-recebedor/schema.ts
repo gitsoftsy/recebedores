@@ -1,5 +1,5 @@
 import { z } from "zod";
-const telefoneRegex = /^\(\d{2}\) \d{4,5}-\d{4}$/;
+const telefoneRegex = /^\d{2}-\d{9}$/;
 
 const optionalString = z
   .string()
@@ -45,14 +45,12 @@ export const step3Schema = z
       .string()
       .regex(telefoneRegex, "Telefone fixo inválido")
       .nullable()
-      .optional()
-      .transform((value) => value?.replace(/\D/g, "") ?? null),
+      .optional(),
     celularRespLegal: z
       .string()
       .regex(telefoneRegex, "Telefone celular inválido")
       .nullable()
-      .optional()
-      .transform((value) => value?.replace(/\D/g, "") ?? null),
+      .optional(),
   })
   .refine((data) => data.telefoneRespLegal || data.celularRespLegal, {
     message: "Pelo menos um telefone deve ser preenchido.",
@@ -77,14 +75,12 @@ export const step3Schema = z
       .string()
       .regex(telefoneRegex, "Telefone fixo inválido")
       .nullable()
-      .optional()
-      .transform((value) => value?.replace(/\D/g, "") ?? null),
+      .optional(),
     celular: z
       .string()
       .regex(telefoneRegex, "Telefone celular inválido")
       .nullable()
-      .optional()
-      .transform((value) => value?.replace(/\D/g, "") ?? null),
+      .optional(),
   })
   .refine((data) => data.telefone || data.celular, {
     message: "Pelo menos um telefone deve ser preenchido.",
@@ -92,13 +88,7 @@ export const step3Schema = z
   });
 
 export const step1Schema = z.object({
-  cnpj: z
-    .string()
-    .nullable()
-    .optional()
-    .transform((value) => value?.replace(/\D/g, "")),
   nomeFantasia: z.string().min(1, "Este campo é obrigatório."),
-  email: optionalString,
   razaoSocial: z.string().min(1, "Este campo é obrigatório."),
   site: optionalString,
   receitaAnual: z.string().min(1, "Este campo é obrigatório."),

@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { api } from "@/services/api";
+import { ReceiverData } from "@/contexts/UserContext";
 
 export async function loginAction(email: string, senha: string) {
   try {
@@ -10,9 +11,9 @@ export async function loginAction(email: string, senha: string) {
     if (response.status === 200) {
       const { idRecedebor, idConta, nome } = response.data;
 
-      const dataRecebedor = {
-        idRecedebor : idRecedebor,
-        idConta : idConta,
+      const dataRecebedor: ReceiverData = {
+        id : idRecedebor,
+        contaId : idConta,
         nome : nome
       }
 

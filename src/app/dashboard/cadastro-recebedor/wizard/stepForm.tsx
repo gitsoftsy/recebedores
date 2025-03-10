@@ -46,11 +46,14 @@ export default function StepForm({
     };
 
     try {
+      console.log(recebedorPjData);
       const response = await api.post("/recebedorPj", recebedorPjData, {
         headers: {
           idConta: receiver?.contaId,
         },
       });
+
+      console.log(response.data);
     } catch (error) {
       console.error("Erro ao enviar dados", error);
     }

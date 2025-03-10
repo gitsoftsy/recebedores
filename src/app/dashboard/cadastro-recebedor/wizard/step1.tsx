@@ -23,19 +23,19 @@ export default function Step1({
   setFormData,
   tipoEmpresaOptions,
 }: Step) {
-  const { receiver } = useContext(UserContext);
+  // const { receiver } = useContext(UserContext);
+
+  // console.log(receiver);
 
   const form = useForm<Step1FormData>({
     resolver: zodResolver(step1Schema),
     mode: "onChange",
-    defaultValues: {
-      cnpj: receiver?.cnpj,
-      email: receiver?.email,
-    },
+    // defaultValues: {
+    //   cnpj: receiver?.cnpj,
+    //   email: receiver?.email,
+    // },
+    shouldUnregister: false,
   });
-
-  const { errors } = form.formState;
-  console.log(errors);
 
   return (
     <>
@@ -51,7 +51,7 @@ export default function Step1({
         >
           <section>
             <div className="flex w-full flex-wrap -mr-3 mt-0">
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="cnpj"
                 render={({ field }) => (
@@ -70,7 +70,7 @@ export default function Step1({
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
               <FormField
                 control={form.control}
                 name="nomeFantasia"
@@ -91,7 +91,7 @@ export default function Step1({
                   </FormItem>
                 )}
               />
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
@@ -109,7 +109,7 @@ export default function Step1({
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
               <FormField
                 control={form.control}
                 name="razaoSocial"
@@ -177,7 +177,7 @@ export default function Step1({
                 required={true}
                 fullWidth={false}
                 label="Tipo da empresa"
-                name="tipoEmpresa"
+                name="idTipoEmpresa"
                 options={tipoEmpresaOptions ?? []}
               />
 
@@ -207,7 +207,7 @@ export default function Step1({
                 fullWidth={false}
                 required={true}
                 label="Banco"
-                name="banco"
+                name="idBanco"
                 options={bancoOptions ?? []}
               />
               <FormField
@@ -238,7 +238,7 @@ export default function Step1({
                 name="dvAgencia"
                 render={({ field }) => (
                   <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                    <FormLabel>Dígito da Agência</FormLabel>
+                    <FormLabel>Dígito da Agência<span className="text-red-600">*</span></FormLabel>
                     <FormControl>
                       <Input
                         type="text"
@@ -280,7 +280,7 @@ export default function Step1({
                 name="dvConta"
                 render={({ field }) => (
                   <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                    <FormLabel>Dígito da Conta</FormLabel>
+                    <FormLabel>Dígito da Conta<span className="text-red-600">*</span></FormLabel>
                     <FormControl>
                       <Input
                         type="text"

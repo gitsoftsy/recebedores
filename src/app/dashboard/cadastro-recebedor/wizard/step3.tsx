@@ -202,7 +202,7 @@ export default function Step3({
               form={form}
               fullWidth={true}
               label="Ocupação Profissional"
-              name="ocupacaoProfissional"
+              name="idOcupacao"
               options={ocupacaoProfissionalOptions ?? []}
               required={true}
             />
@@ -400,10 +400,10 @@ export default function Step3({
               name="telefoneRespLegal"
               render={({ field }) => (
                 <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                  <FormLabel>Telefone fixo</FormLabel>
+                  <FormLabel>Telefone</FormLabel>
                   <FormControl>
                     <PatternFormat
-                      format="(##) ####-####"
+                      format="##-#########"
                       customInput={Input}
                       id={field.name}
                       {...field}
@@ -418,10 +418,10 @@ export default function Step3({
               name="celularRespLegal"
               render={({ field }) => (
                 <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                  <FormLabel>Telefone celular</FormLabel>
+                  <FormLabel>Celular</FormLabel>
                   <FormControl>
                     <PatternFormat
-                      format="(##) #####-####"
+                      format="##-#########"
                       customInput={Input}
                       id={field.name}
                       {...field}

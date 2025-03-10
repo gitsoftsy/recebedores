@@ -21,6 +21,7 @@ export default function Step2({ nextStep, setFormData, prevStep }: Step) {
   const form = useForm<Step2FormData>({
     resolver: zodResolver(step2Schema),
     mode: "onChange",
+    shouldUnregister: false,
   });
 
   const handleCEP = async () => {
@@ -257,10 +258,10 @@ export default function Step2({ nextStep, setFormData, prevStep }: Step) {
               name="telefone"
               render={({ field }) => (
                 <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                  <FormLabel>Telefone fixo</FormLabel>
+                  <FormLabel>Telefone</FormLabel>
                   <FormControl>
                     <PatternFormat
-                      format="(##) ####-####"
+                      format="##-#########"
                       customInput={Input}
                       id={field.name}
                       {...field}
@@ -276,10 +277,10 @@ export default function Step2({ nextStep, setFormData, prevStep }: Step) {
               name="celular"
               render={({ field }) => (
                 <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                  <FormLabel>Telefone celular</FormLabel>
+                  <FormLabel>Celular</FormLabel>
                   <FormControl>
                     <PatternFormat
-                      format="(##) #####-####"
+                      format="##-#########"
                       customInput={Input}
                       id={field.name}
                       {...field}
