@@ -8,6 +8,8 @@ import { Options } from "@/@types/options";
 import { Step1FormData, Step2FormData, Step3FormData } from "../schema";
 import { api } from "@/services/api";
 import { UserContext } from "@/contexts/UserContext";
+import { Modal } from "@/components/Modal";
+import { CheckCircle } from "lucide-react";
 
 export interface StepFormProps {
   tipoEmpresaOptions: Options;
@@ -32,6 +34,11 @@ export default function StepForm({
     step2Data: {} as Step2FormData,
     step3Data: {} as Step3FormData,
   });
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalSuccess, setModalSuccess] = useState(false);
+
   const { receiver } = useContext(UserContext);
 
   const nextStep = () => setCurrentStep((prev) => prev + 1);
@@ -46,16 +53,25 @@ export default function StepForm({
     };
 
     try {
-      console.log(recebedorPjData);
-      const response = await api.post("/recebedorPj", recebedorPjData, {
+      await api.post("/recebedorPj", recebedorPjData, {
         headers: {
           idConta: receiver?.contaId,
         },
       });
 
-      console.log(response.data);
-    } catch (error) {
+      setModalTitle("Cadastro Finalizado");
+      setModalMessage("O cadastro foi concluído com sucesso!");
+      setModalSuccess(true);
+      setModalOpen(true);
+    } catch (error: any) {
       console.error("Erro ao enviar dados", error);
+      const errorMessage =
+        error.response?.data?.mensagem || "Ocorreu um erro inesperado.";
+
+      setModalTitle("Erro ao cadastrar");
+      setModalMessage(errorMessage);
+      setModalSuccess(false);
+      setModalOpen(true);
     }
   }
 
@@ -85,6 +101,7 @@ export default function StepForm({
       {currentStep === 1 && (
         <Step1
           nextStep={nextStep}
+          formData={formData}
           setFormData={setFormData}
           tipoEmpresaOptions={tipoEmpresaOptions}
           bancoOptions={bancoOptions}
@@ -93,6 +110,7 @@ export default function StepForm({
       {currentStep === 2 && (
         <Step2
           prevStep={prevStep}
+          formData={formData}
           setFormData={setFormData}
           nextStep={nextStep}
         />
@@ -105,6 +123,13 @@ export default function StepForm({
           ocupacaoProfissionalOptions={ocupacaoProfissionalOptions}
         />
       )}
+      <Modal
+        open={modalOpen}
+        setOpen={setModalOpen}
+        title={modalTitle}
+        description={modalMessage}
+        success={modalSuccess}
+      />
     </>
   );
 }

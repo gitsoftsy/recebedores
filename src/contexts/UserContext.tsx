@@ -1,7 +1,8 @@
 "use client";
 
 import { createContext, ReactNode, useState } from "react";
-
+import { useRouter } from "next/navigation";
+import { logout } from "@/utils/receiver";
 export interface ReceiverData {
   id: number;
   contaId: number;
@@ -10,9 +11,13 @@ export interface ReceiverData {
 
 interface UserContextType {
   receiver: ReceiverData | null;
+  handleLogout: () => void;
 }
 
-export const UserContext = createContext<UserContextType>({ receiver: null });
+export const UserContext = createContext<UserContextType>({
+  receiver: null,
+  handleLogout: () => {},
+});
 
 export function UserProvider({
   children,
@@ -21,8 +26,17 @@ export function UserProvider({
   children: ReactNode;
   initialReceiver: ReceiverData | null;
 }) {
+  const [receiver, setReceiver] = useState<ReceiverData | null>(initialReceiver);
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await logout();
+    setReceiver(null);
+    router.push("/"); 
+  };
+
   return (
-    <UserContext.Provider value={{ receiver: useState(initialReceiver)[0] }}>
+    <UserContext.Provider value={{ receiver, handleLogout }}>
       {children}
     </UserContext.Provider>
   );

@@ -8,33 +8,24 @@ import {
 import { Step } from "../types/form";
 import { Input } from "@/components/ui/input";
 import SelectFilter from "@/components/select";
-import { UserContext } from "@/contexts/UserContext";
-import { useContext } from "react";
 import { Button } from "@/components/ui/button";
 import { FormProvider, useForm } from "react-hook-form";
 import { Step1FormData, step1Schema } from "../schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PatternFormat } from "react-number-format";
 import { FormDataWizard } from "./stepForm";
 
 export default function Step1({
   bancoOptions,
   nextStep,
   setFormData,
+  formData,
   tipoEmpresaOptions,
 }: Step) {
-  // const { receiver } = useContext(UserContext);
-
-  // console.log(receiver);
-
   const form = useForm<Step1FormData>({
     resolver: zodResolver(step1Schema),
     mode: "onChange",
-    // defaultValues: {
-    //   cnpj: receiver?.cnpj,
-    //   email: receiver?.email,
-    // },
     shouldUnregister: false,
+    defaultValues: formData.step1Data,
   });
 
   return (
@@ -51,26 +42,6 @@ export default function Step1({
         >
           <section>
             <div className="flex w-full flex-wrap -mr-3 mt-0">
-              {/* <FormField
-                control={form.control}
-                name="cnpj"
-                render={({ field }) => (
-                  <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                    <FormLabel>CNPJ</FormLabel>
-                    <FormControl>
-                      <PatternFormat
-                        id={field.name}
-                        type="text"
-                        disabled={true}
-                        format="##.###.###/####-##"
-                        customInput={Input}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
               <FormField
                 control={form.control}
                 name="nomeFantasia"
@@ -91,25 +62,6 @@ export default function Step1({
                   </FormItem>
                 )}
               />
-              {/* <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                    <FormLabel>E-mail</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        disabled={true}
-                        id={field.name}
-                        {...field}
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
               <FormField
                 control={form.control}
                 name="razaoSocial"
@@ -153,7 +105,7 @@ export default function Step1({
                 control={form.control}
                 name="receitaAnual"
                 render={({ field }) => (
-                  <FormItem className="md:w-1/2 xs:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)]">
+                  <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
                     <FormLabel>
                       Receita anual
                       <span className="text-red-600">*</span>
@@ -175,7 +127,7 @@ export default function Step1({
               <SelectFilter
                 form={form}
                 required={true}
-                fullWidth={false}
+                fullWidth={true}
                 label="Tipo da empresa"
                 name="idTipoEmpresa"
                 options={tipoEmpresaOptions ?? []}
@@ -204,7 +156,7 @@ export default function Step1({
               />
               <SelectFilter
                 form={form}
-                fullWidth={false}
+                fullWidth={true}
                 required={true}
                 label="Banco"
                 name="idBanco"
@@ -238,7 +190,9 @@ export default function Step1({
                 name="dvAgencia"
                 render={({ field }) => (
                   <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                    <FormLabel>Dígito da Agência<span className="text-red-600">*</span></FormLabel>
+                    <FormLabel>
+                      Dígito da Agência<span className="text-red-600">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="text"
@@ -280,7 +234,9 @@ export default function Step1({
                 name="dvConta"
                 render={({ field }) => (
                   <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
-                    <FormLabel>Dígito da Conta<span className="text-red-600">*</span></FormLabel>
+                    <FormLabel>
+                      Dígito da Conta<span className="text-red-600">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="text"

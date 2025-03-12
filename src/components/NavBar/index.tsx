@@ -1,28 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { HiCash } from "react-icons/hi";
 import { IoExitOutline } from "react-icons/io5";
-import { MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight } from "react-icons/md";
+import {
+  MdKeyboardDoubleArrowLeft,
+  MdKeyboardDoubleArrowRight,
+} from "react-icons/md";
 import { SiDatabricks } from "react-icons/si";
 import {
-    Menu,
-    menuClasses,
-    MenuItem,
-    Sidebar,
-    sidebarClasses,
+  Menu,
+  menuClasses,
+  MenuItem,
+  Sidebar,
+  sidebarClasses,
 } from "react-pro-sidebar";
 import Image from "next/image";
 import Link from "next/link";
 import logoUrucui from "/public/logo-urucui.svg";
+import { UserContext } from "@/contexts/UserContext";
 
 interface NavBarProps {
   receiverName: string;
 }
 
 export default function NavBar({ receiverName }: NavBarProps) {
+  const { handleLogout } = useContext(UserContext);
   const [collapsed, setCollapsed] = useState(false);
-  
 
   return (
     <Sidebar
@@ -45,7 +49,11 @@ export default function NavBar({ receiverName }: NavBarProps) {
       }}
     >
       <header>
-        <div className={`flex w-full ${collapsed ? 'justify-center mb-6' : 'justify-end pe-4'} items-center pt-3`}>
+        <div
+          className={`flex w-full ${
+            collapsed ? "justify-center mb-6" : "justify-end pe-4"
+          } items-center pt-3`}
+        >
           {collapsed ? (
             <MdKeyboardDoubleArrowRight
               className="cursor-pointer"
@@ -144,8 +152,8 @@ export default function NavBar({ receiverName }: NavBarProps) {
         <MenuItem icon={<HiCash size={20} />} component={<Link href={""} />}>
           {receiverName}
         </MenuItem>
-        
-        <MenuItem icon={<IoExitOutline size={20} />} onClick={() => {}}>
+
+        <MenuItem icon={<IoExitOutline size={20} />} onClick={handleLogout}>
           Sair
         </MenuItem>
       </Menu>

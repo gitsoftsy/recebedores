@@ -23,7 +23,7 @@ export interface Step {
   tipoEmpresaOptions?: Options;
   bancoOptions?: Options;
   ocupacaoProfissionalOptions?: Options;
-  formData?: FormDataWizard;
+  formData: FormDataWizard;
   nextStep?: () => void;
   prevStep?: () => void;
   setFormData?: (data: any) => void;

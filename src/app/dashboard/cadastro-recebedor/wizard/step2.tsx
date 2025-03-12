@@ -17,11 +17,17 @@ import { Step2FormData, step2Schema } from "../schema";
 import { Button } from "@/components/ui/button";
 import { FormDataWizard } from "./stepForm";
 
-export default function Step2({ nextStep, setFormData, prevStep }: Step) {
+export default function Step2({
+  nextStep,
+  setFormData,
+  formData,
+  prevStep,
+}: Step) {
   const form = useForm<Step2FormData>({
     resolver: zodResolver(step2Schema),
     mode: "onChange",
     shouldUnregister: false,
+    defaultValues: formData.step2Data,
   });
 
   const handleCEP = async () => {
@@ -47,23 +53,17 @@ export default function Step2({ nextStep, setFormData, prevStep }: Step) {
       return;
     }
 
-    const campos: Record<
-      "endereco" | "bairro" | "cidade" | "estado",
-      string
-    > = {
-      endereco: dadosCEP.logradouro,
-      bairro: dadosCEP.bairro,
-      cidade: dadosCEP.localidade,
-      estado: dadosCEP.uf,
-    };
+    const campos: Record<"endereco" | "bairro" | "cidade" | "estado", string> =
+      {
+        endereco: dadosCEP.logradouro,
+        bairro: dadosCEP.bairro,
+        cidade: dadosCEP.localidade,
+        estado: dadosCEP.uf,
+      };
 
     Object.entries(campos).forEach(([campo, valor]) => {
       form.setValue(
-        campo as
-          | "endereco"
-          | "bairro"
-          | "cidade"
-          | "estado",
+        campo as "endereco" | "bairro" | "cidade" | "estado",
         valor
       );
     });
@@ -86,12 +86,12 @@ export default function Step2({ nextStep, setFormData, prevStep }: Step) {
           </h2>
           <hr />
           <div className="flex w-full flex-wrap -mr-3 mt-0">
-            <div className="flex flex-wrap md:w-1/2 w-full flex-none items-end max-w-full mt-3">
+            <div className="flex flex-wrap md:w-1/2 w-full flex-none items-start max-w-full">
               <FormField
                 control={form.control}
                 name="cep"
                 render={({ field }) => (
-                  <FormItem className="xs:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)]">
+                  <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
                     <FormLabel>
                       CEP<span className="text-red-600">*</span>
                     </FormLabel>
@@ -115,7 +115,7 @@ export default function Step2({ nextStep, setFormData, prevStep }: Step) {
                 control={form.control}
                 name="numero"
                 render={({ field }) => (
-                  <FormItem className="xs:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)]">
+                  <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
                     <FormLabel>
                       Número<span className="text-red-600">*</span>
                     </FormLabel>

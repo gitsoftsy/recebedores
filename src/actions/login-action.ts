@@ -9,10 +9,10 @@ export async function loginAction(email: string, senha: string) {
     const response = await api.post("/login", { email, senha });
 
     if (response.status === 200) {
-      const { idRecedebor, idConta, nome } = response.data;
+      const { idRecebedor, idConta, nome } = response.data;
 
       const dataRecebedor: ReceiverData = {
-        id : idRecedebor,
+        id : idRecebedor,
         contaId : idConta,
         nome : nome
       }

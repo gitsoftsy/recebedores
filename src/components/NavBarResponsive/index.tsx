@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { HiCash } from "react-icons/hi";
 import { IoExitOutline } from "react-icons/io5";
 import { SiDatabricks } from "react-icons/si";
@@ -8,8 +8,11 @@ import { FaBars } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
 import logoUrucui from "/public/logo-urucui.svg";
+import { logout } from "@/utils/receiver";
+import { UserContext } from "@/contexts/UserContext";
 
 export default function NavBarResponsive() {
+  const { handleLogout } = useContext(UserContext);
   const [menuOpen, setMenuOpen] = useState(false);
 
 
@@ -69,7 +72,7 @@ export default function NavBarResponsive() {
           </li>
           <li>
             <button
-              
+              onClick={handleLogout}
               className="flex items-center text-white gap-2 hover:text-gray-300"
             >
               <IoExitOutline size={20} />

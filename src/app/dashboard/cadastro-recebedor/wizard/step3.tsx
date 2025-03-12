@@ -16,7 +16,7 @@ import { Step3FormData, step3Schema } from "../schema";
 import { FormProvider, useForm } from "react-hook-form";
 import { PatternFormat } from "react-number-format";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Loader2 } from "lucide-react";
 
 export default function Step3({
   prevStep,
@@ -27,6 +27,8 @@ export default function Step3({
   const form = useForm<Step3FormData>({
     resolver: zodResolver(step3Schema),
     mode: "onChange",
+    shouldUnregister: false,
+    defaultValues: formData.step3Data,
   });
 
   const handleCEP = async () => {
@@ -65,18 +67,18 @@ export default function Step3({
     }
   };
 
+  const handleFormSubmit = async (data: Step3FormData) => {
+    if (handleSubmit) {
+      await handleSubmit({
+        ...formData,
+        step3Data: data,
+      });
+    }
+  };
+
   return (
     <FormProvider {...form}>
-      <form
-       onSubmit={form.handleSubmit((data) => {
-        if (handleSubmit) {
-          handleSubmit({
-            ...formData!,
-            step3Data: data,
-          });
-        }
-      })}
-      >
+      <form onSubmit={form.handleSubmit(handleFormSubmit)}>
         <section className="flex flex-col w-full h-max gap-2">
           <Alert variant="default" className="mb-2">
             <AlertTriangle className="size-4" />
@@ -136,12 +138,12 @@ export default function Step3({
                 </FormItem>
               )}
             />
-            <div className="flex flex-wrap md:w-1/2 w-full flex-none items-end max-w-full mt-3">
+            <div className="flex flex-wrap md:w-1/2 w-full flex-none items-start max-w-full">
               <FormField
                 control={form.control}
                 name="cpfRespLegal"
                 render={({ field }) => (
-                  <FormItem className="xs:w-1/2 w-full xs:mt-0 mt-3 flex-none max-w-full px-[calc(1.5rem*0.5)]">
+                  <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
                     <FormLabel>
                       CPF do Representante
                       <span className="text-red-600">*</span>
@@ -162,7 +164,7 @@ export default function Step3({
                 control={form.control}
                 name="dataNascimentoRespLegal"
                 render={({ field }) => (
-                  <FormItem className="xs:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)]">
+                  <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
                     <FormLabel>
                       Data de Nascimento<span className="text-red-600">*</span>
                     </FormLabel>
@@ -235,12 +237,12 @@ export default function Step3({
               </h2>
               <hr />
             </div>
-            <div className="flex flex-wrap md:w-1/2 w-full flex-none items-end max-w-full mt-3">
+            <div className="flex flex-wrap md:w-1/2 w-full flex-none items-start max-w-full">
               <FormField
                 control={form.control}
                 name="cepRespLegal"
                 render={({ field }) => (
-                  <FormItem className="xs:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)]">
+                  <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
                     <FormLabel>
                       CEP
                       <span className="text-red-600">*</span>
@@ -265,7 +267,7 @@ export default function Step3({
                 control={form.control}
                 name="numeroRespLegal"
                 render={({ field }) => (
-                  <FormItem className="xs:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)]">
+                  <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
                     <FormLabel>
                       Número
                       <span className="text-red-600">*</span>
@@ -444,8 +446,9 @@ export default function Step3({
           <Button
             type="submit"
             className="bg-green-500 hover:bg-green-600 text-white"
+            disabled={form.formState.isSubmitting}
           >
-            Cadastrar
+            {form.formState.isSubmitting ? "Carregando..." : "Cadastrar"}
           </Button>
         </div>
       </form>

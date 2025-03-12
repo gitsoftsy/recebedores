@@ -14,4 +14,3 @@ export const viaCEP = axios.create({
 export const apiDev = axios.create({
     baseURL: "http://10.40.110.2:8080/api-educacional-recebedor"
 })
-
