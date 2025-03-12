@@ -16,7 +16,7 @@ export default async function LayoutDashboard({
     <section className="w-full h-full min-h-screen flex md:flex-row flex-col">
       <UserProvider initialReceiver={receiver}>
         <div className="hidden md:block">
-          <NavBar />
+          <NavBar receiverName={receiver.nome} />
         </div>
         <div className="block md:hidden">
           <NavBarResponsive />

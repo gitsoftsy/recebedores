@@ -16,7 +16,11 @@ import Image from "next/image";
 import Link from "next/link";
 import logoUrucui from "/public/logo-urucui.svg";
 
-export default function NavBar() {
+interface NavBarProps {
+  receiverName: string;
+}
+
+export default function NavBar({ receiverName }: NavBarProps) {
   const [collapsed, setCollapsed] = useState(false);
   
 
@@ -138,7 +142,7 @@ export default function NavBar() {
         }}
       >
         <MenuItem icon={<HiCash size={20} />} component={<Link href={""} />}>
-          Quero bolsa
+          {receiverName}
         </MenuItem>
         
         <MenuItem icon={<IoExitOutline size={20} />} onClick={() => {}}>
