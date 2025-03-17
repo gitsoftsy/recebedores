@@ -1,5 +1,6 @@
 {
   "name": "next",
+  "homepage": "recebedores",
   "version": "0.1.0",
   "private": true,
   "scripts": {
