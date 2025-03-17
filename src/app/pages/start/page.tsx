@@ -35,7 +35,7 @@ export default function Users() {
         </ul>
         <div className="flex items-center justify-end mt-8">
           <Link
-            href={"/dashboard/cadastro-recebedor"}
+            href={"/cadastro-recebedor"}
             className="border-2 border-solid border-system-blue rounded-full p-1 text-system-blue hover:bg-system-blue hover:text-white transition-all ease-in-out duration-500"
           >
             <FaArrowRight size={40} />

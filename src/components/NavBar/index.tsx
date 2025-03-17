@@ -17,7 +17,7 @@ import {
 } from "react-pro-sidebar";
 import Image from "next/image";
 import Link from "next/link";
-import logoUrucui from "/public/logo-urucui.svg";
+import logoSoftsy from "/public/logo-softsy.png"
 import { UserContext } from "@/contexts/UserContext";
 
 interface NavBarProps {
@@ -72,10 +72,10 @@ export default function NavBar({ receiverName }: NavBarProps) {
         </div>
         <div className="flex justify-center w-full px-4">
           <Image
-            src={logoUrucui}
+            src={logoSoftsy}
             // width={500}
             // height={500}
-            className="w-full h-auto"
+            className="w-full h-auto bg-white rounded-lg"
             alt="Logo"
             priority={true}
           />

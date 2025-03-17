@@ -26,7 +26,7 @@ export default function Home() {
     const result = await loginAction(data.email, data.senha);
 
     if (result && result.success) {
-      navigate.push("/dashboard/start");
+      navigate.push("/pages/start");
       form.reset();
     } else {
       form.setError("root", {
@@ -37,6 +37,7 @@ export default function Home() {
   };
 
   return (
+  
     <main className="containerLogin w-full h-full min-h-screen flex justify-center items-center">
       <Form {...form}>
         <form

@@ -7,7 +7,7 @@ import { SiDatabricks } from "react-icons/si";
 import { FaBars } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
-import logoUrucui from "/public/logo-urucui.svg";
+import logoSoftsy from "/public/logo-softsy.png";
 import { logout } from "@/utils/receiver";
 import { UserContext } from "@/contexts/UserContext";
 
@@ -19,7 +19,7 @@ export default function NavBarResponsive() {
   return (
     <nav className="bg-[#031E3B] w-full p-4">
       <div className="container mx-auto flex justify-between items-center">
-        <Image src={logoUrucui} className="h-10 w-auto" alt="Logo" priority={true} />
+        <Image src={logoSoftsy} className="h-10 w-auto bg-white rounded-lg" alt="Logo" priority={true} />
         <button onClick={() => setMenuOpen(!menuOpen)} className="text-white md:hidden">
           <FaBars size={24} />
         </button>

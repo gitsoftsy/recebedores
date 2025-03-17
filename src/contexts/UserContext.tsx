@@ -9,7 +9,7 @@ export interface ReceiverData {
   nome: string;
 }
 
-interface UserContextType {
+export interface UserContextType {
   receiver: ReceiverData | null;
   handleLogout: () => void;
 }

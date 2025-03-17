@@ -22,7 +22,7 @@ export default function QRCode(){
             </p>
             <div className="flex items-center justify-center mt-8">
               <Link
-                href={"/dashboard/cadastro-recebedor"}
+                href={"/pages/cadastro-recebedor"}
                 className="border-2 border-solid text-2xl mt-2 border-system-blue rounded-lg px-4 py-2 text-system-blue hover:bg-system-blue hover:text-white transition-all ease-in-out duration-500"
               >
                 Copiar Link
