@@ -26,7 +26,7 @@ export default function Home() {
     const result = await loginAction(data.email, data.senha);
 
     if (result && result.success) {
-      navigate.push("/pages/start");
+      navigate.push("/home");
       form.reset();
     } else {
       form.setError("root", {
