@@ -26,7 +26,7 @@ export interface FormDataWizard {
 export default function StepForm({
   tipoEmpresaOptions,
   bancoOptions,
-  ocupacaoProfissionalOptions,
+  ocupacaoProfissionalOptions
 }: StepFormProps) {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [formData, setFormData] = useState<FormDataWizard>({
@@ -105,6 +105,7 @@ export default function StepForm({
           setFormData={setFormData}
           tipoEmpresaOptions={tipoEmpresaOptions}
           bancoOptions={bancoOptions}
+          receiverData={receiver?.razaoSocial}
         />
       )}
       {currentStep === 2 && (
@@ -121,7 +122,7 @@ export default function StepForm({
           formData={formData}
           handleSubmit={handleSubmit}
           ocupacaoProfissionalOptions={ocupacaoProfissionalOptions}
-        />
+               />
       )}
       <Modal
         open={modalOpen}

@@ -7,6 +7,7 @@ export interface ReceiverData {
   id: number;
   contaId: number;
   nome: string;
+  razaoSocial: string;
 }
 
 export interface UserContextType {

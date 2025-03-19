@@ -20,6 +20,7 @@ export default function Step1({
   setFormData,
   formData,
   tipoEmpresaOptions,
+  receiverData
 }: Step) {
   const form = useForm<Step1FormData>({
     resolver: zodResolver(step1Schema),
@@ -73,7 +74,7 @@ export default function Step1({
                     <FormControl>
                       <Input
                         type="text"
-                        disabled={field.disabled}
+                        disabled={true}
                         id={field.name}
                         {...form.register(field.name)}
                       />
