@@ -105,7 +105,7 @@ export default function StepForm({
           setFormData={setFormData}
           tipoEmpresaOptions={tipoEmpresaOptions}
           bancoOptions={bancoOptions}
-          receiverData={receiver?.razaoSocial}
+          receiverData={receiver ? receiver : undefined}
         />
       )}
       {currentStep === 2 && (

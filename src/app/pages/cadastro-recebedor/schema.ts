@@ -57,7 +57,7 @@ export const step3Schema = z
     path: ["telefoneRespLegal", "celularRespLegal"],
   });
 
-  export const step2Schema = z
+export const step2Schema = z
   .object({
     cep: z
       .string()
@@ -87,6 +87,39 @@ export const step3Schema = z
     path: ["telefone", "celular"],
   });
 
+const validateCNPJ = (cnpj: string) => {
+  cnpj = cnpj.replace(/\D/g, ""); // Remove caracteres não numéricos
+  if (cnpj.length !== 14) return false;
+
+  let tamanho = cnpj.length - 2;
+  let numeros = cnpj.substring(0, tamanho);
+  let digitos = cnpj.substring(tamanho);
+  let soma = 0;
+  let pos = tamanho - 7;
+
+  for (let i = tamanho; i >= 1; i--) {
+    soma += Number(numeros.charAt(tamanho - i)) * pos--;
+    if (pos < 2) pos = 9;
+  }
+
+  let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+  if (resultado !== Number(digitos.charAt(0))) return false;
+
+  tamanho = tamanho + 1;
+  numeros = cnpj.substring(0, tamanho);
+  soma = 0;
+  pos = tamanho - 7;
+  for (let i = tamanho; i >= 1; i--) {
+    soma += Number(numeros.charAt(tamanho - i)) * pos--;
+    if (pos < 2) pos = 9;
+  }
+
+  resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+  if (resultado !== Number(digitos.charAt(1))) return false;
+
+  return true;
+};
+
 export const step1Schema = z.object({
   nomeFantasia: z.string().min(1, "Este campo é obrigatório."),
   razaoSocial: z.string().min(1, "Este campo é obrigatório."),
@@ -111,6 +144,14 @@ export const step1Schema = z.object({
   dvAgencia: z.string().min(1, "Este campo é obrigatório."),
   dvConta: z.string().min(1, "Este campo é obrigatório."),
   contaBancaria: z.string().min(1, "Este campo é obrigatório."),
+  email: z.string().email("E-mail inválido"),
+  cnpj: z
+    .string()
+    .min(14, "CNPJ deve ter 14 caracteres")
+    .max(18, "CNPJ deve ter no máximo 18 caracteres")
+    .refine((cnpj) => validateCNPJ(cnpj), {
+      message: "CNPJ inválido",
+    }),
 });
 
 export type Step1FormData = z.infer<typeof step1Schema>;

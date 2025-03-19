@@ -9,13 +9,15 @@ export async function loginAction(email: string, senha: string) {
     const response = await api.post("/login", { email, senha });
 
     if (response.status === 200) {
-      const { idRecebedor, idConta, nome, razaoSocial } = response.data;
+      const { idRecebedor, idConta, nome, nomeFantasia, documento } = response.data;
 
       const dataRecebedor: ReceiverData = {
         id : idRecebedor,
         contaId : idConta,
         nome : nome,
-        razaoSocial: razaoSocial
+        nomeFantasia: nomeFantasia,
+        documento: documento,
+        email: email
       }
 
       const cookieStore = await cookies();

@@ -1,5 +1,6 @@
 import { Options } from "@/@types/options";
 import { FormDataWizard } from "../wizard/stepForm";
+import { ReceiverData } from "@/contexts/UserContext";
 
 
 export interface TipoEmpresa {
@@ -25,7 +26,7 @@ export interface Step {
   bancoOptions?: Options;
   ocupacaoProfissionalOptions?: Options;
   formData: FormDataWizard;
-  receiverData? : String
+  receiverData? : ReceiverData;
   nextStep?: () => void;
   prevStep?: () => void;
   setFormData?: (data: any) => void;

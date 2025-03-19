@@ -13,6 +13,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { Step1FormData, step1Schema } from "../schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormDataWizard } from "./stepForm";
+import { PatternFormat } from "react-number-format";
 
 export default function Step1({
   bancoOptions,
@@ -20,7 +21,7 @@ export default function Step1({
   setFormData,
   formData,
   tipoEmpresaOptions,
-  receiverData
+  receiverData 
 }: Step) {
   const form = useForm<Step1FormData>({
     resolver: zodResolver(step1Schema),
@@ -28,6 +29,7 @@ export default function Step1({
     shouldUnregister: false,
     defaultValues: formData.step1Data,
   });
+
 
   return (
     <>
@@ -43,6 +45,48 @@ export default function Step1({
         >
           <section>
             <div className="flex w-full flex-wrap -mr-3 mt-0">
+
+              <FormField
+                control={form.control}
+                name="cnpj"
+                render={({ field }) => (
+                  <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
+                    <FormLabel>CNPJ</FormLabel>
+                    <FormControl>
+                      <PatternFormat
+                        id={field.name}
+                        type="text"
+                        disabled={true}
+                        format="##.###.###/####-##"
+                        customInput={Input}
+                        {...field}  
+                        value={receiverData?.documento ?? field.value ?? ""} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
+                    <FormLabel>E-mail</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        disabled={true}
+                        id={field.name}
+                        {...field}
+                        value={receiverData?.email ?? field.value ?? ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="nomeFantasia"
@@ -54,9 +98,10 @@ export default function Step1({
                     <FormControl>
                       <Input
                         type="text"
-                        disabled={field.disabled}
+                        disabled={true}
                         id={field.name}
                         {...form.register(field.name)}
+                        value={receiverData?.nomeFantasia ?? field.value ?? ""}
                       />
                     </FormControl>
                     <FormMessage />
@@ -74,7 +119,7 @@ export default function Step1({
                     <FormControl>
                       <Input
                         type="text"
-                        disabled={true}
+                        disabled={field.disabled}
                         id={field.name}
                         {...form.register(field.name)}
                       />

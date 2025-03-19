@@ -7,13 +7,16 @@ export interface ReceiverData {
   id: number;
   contaId: number;
   nome: string;
-  razaoSocial: string;
+  nomeFantasia: string;
+  documento: string;
+  email: string;
+
 }
 
 export interface UserContextType {
   receiver: ReceiverData | null;
   handleLogout: () => void;
-}
+} 
 
 export const UserContext = createContext<UserContextType>({
   receiver: null,
