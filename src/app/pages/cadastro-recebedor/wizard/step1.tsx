@@ -25,14 +25,17 @@ export default function Step1({
 }: Step) {
   const form = useForm<Step1FormData>({
     resolver: zodResolver(step1Schema),
-    mode: "onChange",
-    shouldUnregister: false,
+      mode: "onChange",
+      shouldUnregister: false,
     defaultValues: {
-      cnpj: receiverData?.documento,
-      email: receiverData?.email,
-      nomeFantasia: receiverData?.nomeFantasia,
+      ...formData.step1Data,
+      cnpj: receiverData?.documento || formData.step1Data.cnpj || "",
+      email: receiverData?.email || formData.step1Data.email || "",
+      nomeFantasia:
+        receiverData?.nomeFantasia || formData.step1Data.nomeFantasia || "",
     },
   });
+ 
 
   return (
     <>

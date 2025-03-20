@@ -54,7 +54,7 @@ export const step3Schema = z
   })
   .refine((data) => data.telefoneRespLegal || data.celularRespLegal, {
     message: "Pelo menos um telefone deve ser preenchido.",
-    path: ["telefoneRespLegal", "celularRespLegal"],
+    path: ["telefoneRespLegal", "celularRespLegal"], // Aponta o erro para ambos os campos
   });
 
 export const step2Schema = z
@@ -82,11 +82,13 @@ export const step2Schema = z
       .nullable()
       .optional(),
   })
-  .refine((data) => data.telefone || data.celular, {
-    message: "Pelo menos um telefone deve ser preenchido.",
-    path: ["telefone", "celular"],
-  });
-
+  .refine(
+    (data) => data.telefone || data.celular, // Verifica se pelo menos um está preenchido
+    {
+      message: "Pelo menos um telefone deve ser preenchido (fixo ou celular).",
+      path: ["celular"], // Associa a mensagem de erro ao campo "celular"
+    }
+  );
 
 
 

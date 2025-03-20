@@ -27,7 +27,12 @@ export default function Step2({
     resolver: zodResolver(step2Schema),
     mode: "onChange",
     shouldUnregister: false,
-    defaultValues: formData.step2Data,
+    defaultValues: {
+      ...formData.step2Data,
+      cep: formData.step2Data.cep
+        ? formData.step2Data.cep.replace(/^(\d{5})(\d{3})$/, "$1-$2")
+        : "",
+    },
   });
 
   const handleCEP = async () => {
