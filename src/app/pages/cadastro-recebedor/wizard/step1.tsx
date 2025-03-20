@@ -21,15 +21,18 @@ export default function Step1({
   setFormData,
   formData,
   tipoEmpresaOptions,
-  receiverData 
+  receiverData
 }: Step) {
   const form = useForm<Step1FormData>({
     resolver: zodResolver(step1Schema),
     mode: "onChange",
     shouldUnregister: false,
-    defaultValues: formData.step1Data,
+    defaultValues: {
+      cnpj: receiverData?.documento,
+      email: receiverData?.email,
+      nomeFantasia: receiverData?.nomeFantasia,
+    },
   });
-
 
   return (
     <>
@@ -59,8 +62,8 @@ export default function Step1({
                         disabled={true}
                         format="##.###.###/####-##"
                         customInput={Input}
-                        {...field}  
-                        value={receiverData?.documento ?? field.value ?? ""} 
+                        {...field}
+                        value={receiverData?.documento ?? field.value ?? ""}
                       />
                     </FormControl>
                     <FormMessage />
