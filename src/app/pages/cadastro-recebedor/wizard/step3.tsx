@@ -16,7 +16,7 @@ import { Step3FormData, step3Schema } from "../schema";
 import { FormProvider, useForm } from "react-hook-form";
 import { PatternFormat } from "react-number-format";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle, Loader2 } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 
 export default function Step3({
   prevStep,

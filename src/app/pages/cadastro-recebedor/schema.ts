@@ -44,17 +44,19 @@ export const step3Schema = z
     telefoneRespLegal: z
       .string()
       .regex(telefoneRegex, "Telefone fixo inválido")
+      .transform((val) => (val ? val : null))
       .nullable()
       .optional(),
     celularRespLegal: z
       .string()
       .regex(telefoneRegex, "Telefone celular inválido")
+      .transform((val) => (val ? val : null))
       .nullable()
       .optional(),
   })
   .refine((data) => data.telefoneRespLegal || data.celularRespLegal, {
     message: "Pelo menos um telefone deve ser preenchido.",
-    path: ["telefoneRespLegal", "celularRespLegal"], // Aponta o erro para ambos os campos
+    path: ["telefoneRespLegal", "celularRespLegal"], 
   });
 
 export const step2Schema = z
@@ -74,19 +76,21 @@ export const step2Schema = z
     telefone: z
       .string()
       .regex(telefoneRegex, "Telefone fixo inválido")
+      .transform((val) => (val ? val : null))
       .nullable()
       .optional(),
     celular: z
       .string()
       .regex(telefoneRegex, "Telefone celular inválido")
+      .transform((val) => (val ? val : null))
       .nullable()
       .optional(),
   })
   .refine(
-    (data) => data.telefone || data.celular, // Verifica se pelo menos um está preenchido
+    (data) => data.telefone || data.celular, 
     {
       message: "Pelo menos um telefone deve ser preenchido (fixo ou celular).",
-      path: ["celular"], // Associa a mensagem de erro ao campo "celular"
+      path: ["celular"], 
     }
   );
 

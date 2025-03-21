@@ -26,7 +26,7 @@ export interface FormDataWizard {
 export default function StepForm({
   tipoEmpresaOptions,
   bancoOptions,
-  ocupacaoProfissionalOptions
+  ocupacaoProfissionalOptions,
 }: StepFormProps) {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [formData, setFormData] = useState<FormDataWizard>({
@@ -45,12 +45,20 @@ export default function StepForm({
   const prevStep = () => setCurrentStep((prev) => prev - 1);
 
   async function handleSubmit(data: FormDataWizard) {
-    const recebedorPjData = {
-      ...data.step1Data,
-      ...data.step2Data,
-      ...data.step3Data,
-      idRecebedorTemp: receiver?.id,
+    const normalizeData = (obj: any) => {
+      return Object.fromEntries(
+        Object.entries(obj || {}).map(([key, value]) => [key, value ?? null]) 
+      );
     };
+
+    const recebedorPjData = {
+      ...normalizeData(data.step1Data),
+      ...normalizeData(data.step2Data),
+      ...normalizeData(data.step3Data),
+      idRecebedorTemp: receiver?.id ?? null,
+    };
+    
+    console.log(recebedorPjData);
 
     try {
       await api.post("/recebedorPj", recebedorPjData, {
@@ -122,7 +130,7 @@ export default function StepForm({
           formData={formData}
           handleSubmit={handleSubmit}
           ocupacaoProfissionalOptions={ocupacaoProfissionalOptions}
-               />
+        />
       )}
       <Modal
         open={modalOpen}
