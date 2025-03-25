@@ -11,7 +11,7 @@ export const fetchCEP = async (cep: string): Promise<CEP | null> => {
     }
 
     if (!response.data || !response.data.logradouro || !response.data.bairro) {
-      console.error("Dados incompletos retornados pela API.");
+      // console.error("Cep não encontrado.");
       return null;
     }
 

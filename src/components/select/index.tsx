@@ -21,6 +21,7 @@ interface SelectFilterProps {
   name: string;
   label: string;
   required: boolean;
+  disabled?: boolean;
   fullWidth: boolean;
 }
 
@@ -30,6 +31,7 @@ export default function SelectFilter({
   name,
   label,
   required,
+  disabled,
   fullWidth,
 }: SelectFilterProps) {
   return (
@@ -49,6 +51,7 @@ export default function SelectFilter({
             onValueChange={field.onChange}
             defaultValue={field.value}
             value={field.value}
+            disabled={disabled}
           >
             <FormControl>
               <SelectTrigger>

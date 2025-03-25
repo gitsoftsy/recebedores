@@ -111,8 +111,8 @@ export const step1Schema = z.object({
     .string()
     .min(1, "Este campo é obrigatório.")
     .transform((val) => {
-      const formattedVal = val.replace("R$", "").replace(/\s/g, ""); 
-      const number = Number(formattedVal.replace(",", ".")); 
+      const formattedVal = val.replace("R$", "").replace(/\s/g, "");
+      const number = Number(formattedVal.replace(",", "."));
       return number;
     })
     .refine((val) => val > 0, "A receita anual deve ser maior que zero")
@@ -146,6 +146,11 @@ export const step1Schema = z.object({
     .max(14, "CNPJ deve ter 14 dígitos"),
 });
 
-export type Step1FormData = z.infer<typeof step1Schema>;
+export type Step1FormData = Omit<
+  z.infer<typeof step1Schema>,
+  "receitaAnual"
+> & {
+  receitaAnual: string | number;
+};
 export type Step2FormData = z.infer<typeof step2Schema>;
 export type Step3FormData = z.infer<typeof step3Schema>;

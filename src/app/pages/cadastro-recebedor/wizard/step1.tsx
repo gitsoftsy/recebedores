@@ -31,8 +31,10 @@ export default function Step1({
       ...formData.step1Data,
       cnpj: receiverData?.documento || formData.step1Data.cnpj || "",
       email: receiverData?.email || formData.step1Data.email || "",
-      nomeFantasia:
-        receiverData?.nome || formData.step1Data.nomeFantasia || "",
+      nomeFantasia: receiverData?.nome || formData.step1Data.nomeFantasia || "",
+      receitaAnual: formData.step1Data.receitaAnual
+        ? String(formData.step1Data.receitaAnual)
+        : "",
     },
   });
 

@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   FormControl,
   FormField,
@@ -16,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Step2FormData, step2Schema } from "../schema";
 import { Button } from "@/components/ui/button";
 import { FormDataWizard } from "./stepForm";
+import { Loader2 } from "lucide-react";
 
 export default function Step2({
   nextStep,
@@ -23,6 +25,9 @@ export default function Step2({
   formData,
   prevStep,
 }: Step) {
+  const [cepWarning, setCepWarning] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
   const form = useForm<Step2FormData>({
     resolver: zodResolver(step2Schema),
     mode: "onChange",
@@ -47,14 +52,15 @@ export default function Step2({
     }
 
     form.clearErrors("cep");
+    setLoading(true);
+    setCepWarning(null);
 
     const dadosCEP = await fetchCEP(cep);
 
+    setLoading(false);
+
     if (!dadosCEP) {
-      form.setError("cep", {
-        type: "manual",
-        message: "Não foi possível encontrar o CEP.",
-      });
+      setCepWarning("CEP não encontrado.");
       return;
     }
 
@@ -100,7 +106,7 @@ export default function Step2({
                     <FormLabel>
                       CEP<span className="text-red-600">*</span>
                     </FormLabel>
-                    <FormControl>
+                    <div className="relative">
                       <PatternFormat
                         id={field.name}
                         format="#####-###"
@@ -110,9 +116,24 @@ export default function Step2({
                           field.onBlur();
                           handleCEP();
                         }}
+                        onChange={(e) => {
+                          setCepWarning(null); 
+                          field.onChange(e); 
+                        }}
+                        disabled={loading}
                       />
-                    </FormControl>
+                      {loading && (
+                        <div className="absolute top-1/2 right-3 transform -translate-y-1/2">
+                          <Loader2 className="size-4 animate-spin text-gray-600" />
+                        </div>
+                      )}
+                    </div>
                     <FormMessage />
+                    {cepWarning && !form.formState.errors.cep && (
+                      <p className={"text-[0.8rem] font-medium text-yellow-600"}>
+                        {cepWarning}
+                      </p>
+                    )}
                   </FormItem>
                 )}
               />
@@ -129,7 +150,7 @@ export default function Step2({
                         type="number"
                         inputMode="numeric"
                         pattern="[0-9]*"
-                        disabled={field.disabled}
+                        disabled={loading}
                         id={field.name}
                         {...form.register(field.name)}
                       />
@@ -152,7 +173,7 @@ export default function Step2({
                     <Input
                       className="w-full"
                       type="text"
-                      disabled={field.disabled}
+                      disabled={loading}
                       id={field.name}
                       {...form.register(field.name)}
                     />
@@ -171,6 +192,7 @@ export default function Step2({
                 value: estado.sigla,
               }))}
               required={false}
+              disabled={loading}
             />
             <FormField
               control={form.control}
@@ -184,7 +206,7 @@ export default function Step2({
                     <Input
                       className="w-full"
                       type="text"
-                      disabled={field.disabled}
+                      disabled={loading}
                       id={field.name}
                       {...form.register(field.name)}
                     />
@@ -205,7 +227,7 @@ export default function Step2({
                     <Input
                       className="w-full"
                       type="text"
-                      disabled={field.disabled}
+                      disabled={loading}
                       id={field.name}
                       {...form.register(field.name)}
                     />
@@ -224,7 +246,7 @@ export default function Step2({
                     <Input
                       className="w-full"
                       type="text"
-                      disabled={field.disabled}
+                      disabled={loading}
                       id={field.name}
                       {...form.register(field.name)}
                     />
@@ -242,7 +264,7 @@ export default function Step2({
                   <FormControl>
                     <Input
                       type="text"
-                      disabled={field.disabled}
+                      disabled={loading}
                       id={field.name}
                       {...form.register(field.name)}
                     />

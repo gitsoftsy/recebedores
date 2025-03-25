@@ -16,7 +16,8 @@ import { Step3FormData, step3Schema } from "../schema";
 import { FormProvider, useForm } from "react-hook-form";
 import { NumericFormat, PatternFormat } from "react-number-format";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Loader2 } from "lucide-react";
+import { useState } from "react";
 
 export default function Step3({
   prevStep,
@@ -24,6 +25,9 @@ export default function Step3({
   formData,
   ocupacaoProfissionalOptions,
 }: Step) {
+  const [cepWarning, setCepWarning] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
   const form = useForm<Step3FormData>({
     resolver: zodResolver(step3Schema),
     mode: "onChange",
@@ -43,28 +47,22 @@ export default function Step3({
     }
 
     form.clearErrors("cepRespLegal");
-    try {
-      const dadosCEP = await fetchCEP(cep);
+    setLoading(true);
+    setCepWarning(null);
 
-      if (!dadosCEP || !dadosCEP.logradouro) {
-        form.setError("cepRespLegal", {
-          type: "manual",
-          message: "CEP não encontrado.",
-        });
-        return;
-      }
+    const dadosCEP = await fetchCEP(cep);
 
-      form.setValue("enderecoRespLegal", dadosCEP.logradouro || "");
-      form.setValue("bairroRespLegal", dadosCEP.bairro || "");
-      form.setValue("cidadeRespLegal", dadosCEP.localidade || "");
-      form.setValue("estadoRespLegal", dadosCEP.uf || "");
-    } catch (error) {
-      console.error("Erro ao buscar CEP:", error);
-      form.setError("cepRespLegal", {
-        type: "manual",
-        message: "Erro ao buscar CEP. Tente novamente.",
-      });
+    setLoading(false);
+
+    if (!dadosCEP) {
+      setCepWarning("CEP não encontrado.");
+      return;
     }
+
+    form.setValue("enderecoRespLegal", dadosCEP.logradouro || "");
+    form.setValue("bairroRespLegal", dadosCEP.bairro || "");
+    form.setValue("cidadeRespLegal", dadosCEP.localidade || "");
+    form.setValue("estadoRespLegal", dadosCEP.uf || "");
   };
 
   const handleFormSubmit = async (data: Step3FormData) => {
@@ -254,7 +252,7 @@ export default function Step3({
                       CEP
                       <span className="text-red-600">*</span>
                     </FormLabel>
-                    <FormControl>
+                    <div className="relative">
                       <PatternFormat
                         id={field.name}
                         format="#####-###"
@@ -264,9 +262,26 @@ export default function Step3({
                           field.onBlur();
                           handleCEP();
                         }}
+                        onChange={(e) => {
+                          setCepWarning(null);
+                          field.onChange(e);
+                        }}
+                        disabled={loading}
                       />
-                    </FormControl>
+                      {loading && (
+                        <div className="absolute top-1/2 right-3 transform -translate-y-1/2">
+                          <Loader2 className="size-4 animate-spin text-gray-600" />
+                        </div>
+                      )}
+                    </div>
                     <FormMessage />
+                    {cepWarning && !form.formState.errors.cepRespLegal && (
+                      <p
+                        className={"text-[0.8rem] font-medium text-yellow-600"}
+                      >
+                        {cepWarning}
+                      </p>
+                    )}
                   </FormItem>
                 )}
               />
@@ -284,6 +299,7 @@ export default function Step3({
                         type="number"
                         inputMode="numeric"
                         pattern="[0-9]*"
+                        disabled={loading}
                         id={field.name}
                         {...form.register(field.name)}
                       />
@@ -306,6 +322,7 @@ export default function Step3({
                     <Input
                       type="text"
                       id={field.name}
+                      disabled={loading}
                       {...form.register(field.name)}
                     />
                   </FormControl>
@@ -322,6 +339,7 @@ export default function Step3({
                 label: estado.nome,
                 value: estado.sigla,
               }))}
+              disabled={loading}
               required={true}
             />
 
@@ -336,6 +354,7 @@ export default function Step3({
                   <FormControl>
                     <Input
                       type="text"
+                      disabled={loading}
                       id={field.name}
                       {...form.register(field.name)}
                     />
@@ -355,6 +374,7 @@ export default function Step3({
                   <FormControl>
                     <Input
                       type="text"
+                      disabled={loading}
                       id={field.name}
                       {...form.register(field.name)}
                     />
@@ -373,6 +393,7 @@ export default function Step3({
                     <Input
                       type="text"
                       id={field.name}
+                      disabled={loading}
                       {...form.register(field.name)}
                     />
                   </FormControl>
@@ -390,6 +411,7 @@ export default function Step3({
                     <Input
                       type="text"
                       id={field.name}
+                      disabled={loading}
                       {...form.register(field.name)}
                     />
                   </FormControl>
