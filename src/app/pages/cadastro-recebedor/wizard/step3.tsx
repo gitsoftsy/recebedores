@@ -14,7 +14,7 @@ import { fetchCEP } from "@/hooks/fetchCEP";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Step3FormData, step3Schema } from "../schema";
 import { FormProvider, useForm } from "react-hook-form";
-import { PatternFormat } from "react-number-format";
+import { NumericFormat, PatternFormat } from "react-number-format";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
 
@@ -211,19 +211,26 @@ export default function Step3({
             <FormField
               control={form.control}
               name="rendaMensal"
-              render={({ field }) => (
+              render={({ field: { onChange, value, ...field } }) => (
                 <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
                   <FormLabel>
                     Receita Mensal
                     <span className="text-red-600">*</span>
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      inputMode="numeric"
-                      pattern="[0-9]*"
-                      id={field.name}
-                      {...form.register(field.name)}
+                    <NumericFormat
+                      customInput={Input}
+                      thousandSeparator="."
+                      decimalSeparator=","
+                      prefix="R$ "
+                      decimalScale={2}
+                      fixedDecimalScale
+                      allowNegative={false}
+                      value={value}
+                      onValueChange={(values) => {
+                        onChange(values.value);
+                      }}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />

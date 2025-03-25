@@ -27,7 +27,19 @@ export const step3Schema = z
       }),
     nomeMaeRespLegal: z.string().min(1, "Este campo é obrigatório."),
     idOcupacao: z.string().min(1, "Este campo é obrigatório."),
-    rendaMensal: z.string().min(1, "Este campo é obrigatório."),
+    rendaMensal: z
+      .string()
+      .min(1, "Este campo é obrigatório.")
+      .transform((val) => {
+        const formattedVal = val.replace("R$", "").replace(/\s/g, "");
+        const number = Number(formattedVal.replace(",", "."));
+        return number;
+      })
+      .refine((val) => val > 0, "A renda mensal deve ser maior que zero")
+      .refine(
+        (val) => val <= 999999999.99,
+        "A renda mensal não pode exceder R$ 999.999.999,99"
+      ),
     cepRespLegal: z
       .string()
       .min(9, "CEP inválido")
@@ -56,7 +68,7 @@ export const step3Schema = z
   })
   .refine((data) => data.telefoneRespLegal || data.celularRespLegal, {
     message: "Pelo menos um telefone deve ser preenchido.",
-    path: ["telefoneRespLegal", "celularRespLegal"], 
+    path: ["telefoneRespLegal", "celularRespLegal"],
   });
 
 export const step2Schema = z
@@ -86,21 +98,28 @@ export const step2Schema = z
       .nullable()
       .optional(),
   })
-  .refine(
-    (data) => data.telefone || data.celular, 
-    {
-      message: "Pelo menos um telefone deve ser preenchido (fixo ou celular).",
-      path: ["celular"], 
-    }
-  );
-
-
+  .refine((data) => data.telefone || data.celular, {
+    message: "Pelo menos um telefone deve ser preenchido (fixo ou celular).",
+    path: ["celular"],
+  });
 
 export const step1Schema = z.object({
   nomeFantasia: z.string().min(1, "Este campo é obrigatório."),
   razaoSocial: z.string().min(1, "Este campo é obrigatório."),
   site: optionalString,
-  receitaAnual: z.string().min(1, "Este campo é obrigatório."),
+  receitaAnual: z
+    .string()
+    .min(1, "Este campo é obrigatório.")
+    .transform((val) => {
+      const formattedVal = val.replace("R$", "").replace(/\s/g, ""); 
+      const number = Number(formattedVal.replace(",", ".")); 
+      return number;
+    })
+    .refine((val) => val > 0, "A receita anual deve ser maior que zero")
+    .refine(
+      (val) => val <= 999999999.99,
+      "A receita anual não pode exceder R$ 999.999.999,99"
+    ),
   idTipoEmpresa: z.string().min(1, "Este campo é obrigatório."),
   dataFundacao: z
     .string()
@@ -124,7 +143,7 @@ export const step1Schema = z.object({
   cnpj: z
     .string()
     .min(14, "CNPJ deve ter 14 dígitos")
-    .max(14, "CNPJ deve ter 14 dígitos")
+    .max(14, "CNPJ deve ter 14 dígitos"),
 });
 
 export type Step1FormData = z.infer<typeof step1Schema>;

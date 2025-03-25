@@ -13,7 +13,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { Step1FormData, step1Schema } from "../schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormDataWizard } from "./stepForm";
-import { PatternFormat } from "react-number-format";
+import { NumericFormat, PatternFormat } from "react-number-format";
 
 export default function Step1({
   bancoOptions,
@@ -21,21 +21,20 @@ export default function Step1({
   setFormData,
   formData,
   tipoEmpresaOptions,
-  receiverData
+  receiverData,
 }: Step) {
   const form = useForm<Step1FormData>({
     resolver: zodResolver(step1Schema),
-      mode: "onChange",
-      shouldUnregister: false,
+    mode: "onChange",
+    shouldUnregister: false,
     defaultValues: {
       ...formData.step1Data,
       cnpj: receiverData?.documento || formData.step1Data.cnpj || "",
       email: receiverData?.email || formData.step1Data.email || "",
       nomeFantasia:
-        receiverData?.nomeFantasia || formData.step1Data.nomeFantasia || "",
+        receiverData?.nome || formData.step1Data.nomeFantasia || "",
     },
   });
- 
 
   return (
     <>
@@ -51,7 +50,6 @@ export default function Step1({
         >
           <section>
             <div className="flex w-full flex-wrap -mr-3 mt-0">
-
               <FormField
                 control={form.control}
                 name="cnpj"
@@ -104,10 +102,8 @@ export default function Step1({
                     <FormControl>
                       <Input
                         type="text"
-                        disabled={true}
                         id={field.name}
                         {...form.register(field.name)}
-                        value={receiverData?.nomeFantasia ?? field.value ?? ""}
                       />
                     </FormControl>
                     <FormMessage />
@@ -156,20 +152,26 @@ export default function Step1({
               <FormField
                 control={form.control}
                 name="receitaAnual"
-                render={({ field }) => (
+                render={({ field: { onChange, value, ...field } }) => (
                   <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
                     <FormLabel>
                       Receita anual
                       <span className="text-red-600">*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        type="number"
-                        inputMode="numeric"
-                        pattern="[0-9]*"
-                        disabled={field.disabled}
-                        id={field.name}
-                        {...form.register(field.name)}
+                      <NumericFormat
+                        customInput={Input}
+                        thousandSeparator="."
+                        decimalSeparator=","
+                        prefix="R$ "
+                        decimalScale={2}
+                        fixedDecimalScale
+                        allowNegative={false}
+                        value={value}
+                        onValueChange={(values) => {
+                          onChange(values.value);
+                        }}
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
