@@ -11,10 +11,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import logoSoftsy from "/public/logo-softsy.png"
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { loginAction } from "@/actions/login-action";
+import Image from "next/image";
 
 export default function Home() {
   const navigate = useRouter();
@@ -38,13 +40,22 @@ export default function Home() {
 
   return (
   
-    <main className="containerLogin w-full h-full min-h-screen flex justify-center items-center">
+    <main className="containerLogin w-full h-full min-h-screen flex justify-center items-center ">
       <Form {...form}>
         <form
-          className="flex-col min-w-[320px] w-4/12 :"
+          className="flex-col relative p-5 shadow rounded-lg min-w-[320px] w-4/12 :"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <h1 className="font-jkabode text-8xl mb-4">Login</h1>
+           <div className="mb-5 justify-center  w-full flex">
+             <Image
+                         src={logoSoftsy}
+                         // width={500}
+                         // height={500}
+                         className="h-auto w-4/5"
+                         alt="Logo"
+                         priority={true}
+                       />
+            </div>
 
           {form.formState.errors.root && (
             <div className="text-red-500 mb-4">
