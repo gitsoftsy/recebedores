@@ -432,32 +432,43 @@ export default function Step3({
               render={({ field }) => (
                 <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
                   <FormLabel>Telefone</FormLabel>
-                  <FormControl>
-                    <PatternFormat
-                      format="##-#########"
-                      customInput={Input}
-                      id={field.name}
-                      {...field}
-                    />
-                  </FormControl>
+                  <PatternFormat
+                    format="##-#########"
+                    customInput={Input}
+                    {...field}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      const celular = form.getValues("celularRespLegal");
+                      const telefone = e.target.value;
+                      if (telefone || celular) {
+                        form.clearErrors(["telefoneRespLegal", "celularRespLegal"]);
+                      }
+                    }}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="celularRespLegal"
               render={({ field }) => (
                 <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
                   <FormLabel>Celular</FormLabel>
-                  <FormControl>
-                    <PatternFormat
-                      format="##-#########"
-                      customInput={Input}
-                      id={field.name}
-                      {...field}
-                    />
-                  </FormControl>
+                  <PatternFormat
+                    format="##-#########"
+                    customInput={Input}
+                    {...field}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      const telefone = form.getValues("telefoneRespLegal");
+                      const celular = e.target.value;
+                      if (telefone || celular) {
+                        form.clearErrors(["telefoneRespLegal", "celularRespLegal"]);
+                      }
+                    }}
+                  />
                   <FormMessage />
                 </FormItem>
               )}

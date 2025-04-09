@@ -65,12 +65,12 @@ export default function Step2({
     }
 
     const campos: Record<"endereco" | "bairro" | "cidade" | "estado", string> =
-      {
-        endereco: dadosCEP.logradouro,
-        bairro: dadosCEP.bairro,
-        cidade: dadosCEP.localidade,
-        estado: dadosCEP.uf,
-      };
+    {
+      endereco: dadosCEP.logradouro,
+      bairro: dadosCEP.bairro,
+      cidade: dadosCEP.localidade,
+      estado: dadosCEP.uf,
+    };
 
     Object.entries(campos).forEach(([campo, valor]) => {
       form.setValue(
@@ -288,14 +288,19 @@ export default function Step2({
               render={({ field }) => (
                 <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
                   <FormLabel>Telefone</FormLabel>
-                  <FormControl>
-                    <PatternFormat
-                      format="##-#########"
-                      customInput={Input}
-                      id={field.name}
-                      {...field}
-                    />
-                  </FormControl>
+                  <PatternFormat
+                    format="##-#########"
+                    customInput={Input}
+                    {...field}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      const celular = form.getValues("celular");
+                      const telefone = e.target.value;
+                      if (telefone || celular) {
+                        form.clearErrors(["telefone", "celular"]);
+                      }
+                    }}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
@@ -307,14 +312,19 @@ export default function Step2({
               render={({ field }) => (
                 <FormItem className="md:w-1/2 w-full flex-none max-w-full px-[calc(1.5rem*0.5)] mt-2">
                   <FormLabel>Celular</FormLabel>
-                  <FormControl>
-                    <PatternFormat
-                      format="##-#########"
-                      customInput={Input}
-                      id={field.name}
-                      {...field}
-                    />
-                  </FormControl>
+                  <PatternFormat
+                    format="##-#########"
+                    customInput={Input}
+                    {...field}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      const telefone = form.getValues("telefone");
+                      const celular = e.target.value;
+                      if (telefone || celular) {
+                        form.clearErrors(["telefone", "celular"]);
+                      }
+                    }}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
