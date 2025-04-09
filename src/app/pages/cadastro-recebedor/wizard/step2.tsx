@@ -117,8 +117,8 @@ export default function Step2({
                           handleCEP();
                         }}
                         onChange={(e) => {
-                          setCepWarning(null); 
-                          field.onChange(e); 
+                          setCepWarning(null);
+                          field.onChange(e);
                         }}
                         disabled={loading}
                       />
@@ -130,7 +130,9 @@ export default function Step2({
                     </div>
                     <FormMessage />
                     {cepWarning && !form.formState.errors.cep && (
-                      <p className={"text-[0.8rem] font-medium text-yellow-600"}>
+                      <p
+                        className={"text-[0.8rem] font-medium text-yellow-600"}
+                      >
                         {cepWarning}
                       </p>
                     )}

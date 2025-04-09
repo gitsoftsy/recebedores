@@ -59,8 +59,6 @@ export default function StepForm({
       idRecebedorTemp: receiver?.id ?? null,
     };
 
-    console.log(recebedorPjData)
-
     try {
       await api.post("/recebedorPj", recebedorPjData, {
         headers: {

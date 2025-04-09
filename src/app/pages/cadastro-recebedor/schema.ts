@@ -66,9 +66,19 @@ export const step3Schema = z
       .nullable()
       .optional(),
   })
-  .refine((data) => data.telefoneRespLegal || data.celularRespLegal, {
-    message: "Pelo menos um telefone deve ser preenchido.",
-    path: ["telefoneRespLegal", "celularRespLegal"],
+  .superRefine((data, ctx) => {
+    if (!data.telefoneRespLegal && !data.celularRespLegal) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Pelo menos um telefone deve ser preenchido.",
+        path: ["telefoneRespLegal"],
+      });
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Pelo menos um telefone deve ser preenchido.",
+        path: ["celularRespLegal"],
+      });
+    }
   });
 
 export const step2Schema = z
@@ -98,9 +108,19 @@ export const step2Schema = z
       .nullable()
       .optional(),
   })
-  .refine((data) => data.telefone || data.celular, {
-    message: "Pelo menos um telefone deve ser preenchido (fixo ou celular).",
-    path: ["celular"],
+  .superRefine((data, ctx) => {
+    if (!data.telefone && !data.celular) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Pelo menos um telefone deve ser preenchido.",
+        path: ["telefone"],
+      });
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Pelo menos um telefone deve ser preenchido.",
+        path: ["celular"],
+      });
+    }
   });
 
 export const step1Schema = z.object({
